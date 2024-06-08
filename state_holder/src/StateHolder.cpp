@@ -89,8 +89,6 @@ RTC::ReturnCode_t StateHolder::onInitialize() {
     addPort(m_StateHolderServicePort);
     addPort(m_TimeKeeperServicePort);
 
-    RTC::Properties &prop = getProperties();
-    coil::stringTo(m_dt, prop["dt"].c_str());
     std::string buf;
     this->getProperty("dt", buf);
     m_dt = std::stod(buf);
@@ -104,7 +102,6 @@ RTC::ReturnCode_t StateHolder::onInitialize() {
             return RTC::RTC_ERROR;
         }
     }
-    RTC_INFO_STREAM("StateHolder: dt = " << m_dt);
 
     RTC::Manager &rtcManager = RTC::Manager::instance();
     std::string nameServer   = rtcManager.getConfig()["corba.nameservers"];
@@ -119,10 +116,10 @@ RTC::ReturnCode_t StateHolder::onInitialize() {
     if (body_filename.find("file://") == 0) { body_filename.erase(0, strlen("file://")); }
     cnoid::BodyPtr robot = body_loader.load(body_filename);
     if (!robot) {
-        RTC_WARN_STREAM("failed to load model [" + body_filename + "]");
+        RTC_WARN_STREAM("failed to load model [" << body_filename << "]");
         return RTC::RTC_ERROR;
     } else {
-        RTC_INFO_STREAM("successed to load model [" + body_filename + "]");
+        RTC_INFO_STREAM("successed to load model [" << body_filename << "]");
     }
     cnoid::Link *li    = robot->rootLink();
     cnoid::Vector3 p   = li->translation();
@@ -186,7 +183,7 @@ RTC::ReturnCode_t StateHolder::onInitialize() {
         registerOutPort(std::string(fsensor_names[i] + "Out").c_str(), *m_wrenchesOut[i]);
     }
 
-
+    RTC_INFO_STREAM("finish onInitialize");
     return RTC::RTC_OK;
 }
 

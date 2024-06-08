@@ -1,3 +1,6 @@
+find_package(catkin REQUIRED COMPONENTS
+  cpp_filters
+)
 find_package(choreonoid REQUIRED)
 
 find_package(PkgConfig)
@@ -18,26 +21,28 @@ link_directories(
   ${openrtm_aist_LIBRARY_DIRS}
 )
 
-add_library(StateHolder SHARED
-  StateHolder.cpp
-  StateHolderService_impl.cpp
-  TimeKeeperService_impl.cpp
+add_library(SequencePlayer SHARED
+  SequencePlayer.cpp
+  SequencePlayerService_impl.cpp
+  interpolator.cpp
+  seqplay.cpp
+  timeUtil.cpp
 )
 
-target_link_libraries(StateHolder
+target_link_libraries(SequencePlayer
   ${catkin_LIBRARIES}
   ${CHOREONOID_BODY_LIBRARIES}
   ${openrtm_aist_LIBRARIES}
   ${${PROJECT_NAME}_IDLLIBRARY_DIRS}
 )
 
-set_target_properties(StateHolder PROPERTIES PREFIX "")
-add_dependencies(StateHolder RTMBUILD2_${PROJECT_NAME}_genrpc)
+set_target_properties(SequencePlayer PROPERTIES PREFIX "")
+add_dependencies(SequencePlayer RTMBUILD2_${PROJECT_NAME}_genrpc)
 
-add_executable(StateHolderComp StateHolderComp.cpp)
-target_link_libraries(StateHolderComp StateHolder)
+add_executable(SequencePlayerComp SequencePlayerComp.cpp)
+target_link_libraries(SequencePlayerComp SequencePlayer)
 
-install(TARGETS StateHolder
+install(TARGETS SequencePlayer
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
