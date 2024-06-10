@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>hrpsys_core_rtc</name>
+  <version>0.0.0</version>
+  <description>metapackage for hrpsys</description>
+
+  <maintainer email="yoshioka@jsk.imi.i.u-tokyo.ac.jp">Hiroki Yoshioka</maintainer>
+
+  <license>EPL</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>sequence_player</depend>
+  <depend>state_holder</depend>
+
+  <export>
+    <metapackage/>
+  </export>
+</package>
