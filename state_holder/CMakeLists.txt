@@ -3,7 +3,6 @@ project(state_holder)
 
 add_compile_options(-std=c++11)
 set(CMAKE_BUILD_TYPE Release)
-# add_definitions(-Wno-deprecated)
 
 find_package(catkin REQUIRED COMPONENTS
   rtmbuild2
@@ -15,8 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
 rtmbuild2_init(rtmbuild2)
 
 catkin_package(
-#  INCLUDE_DIRS include
-  LIBRARIES StateHolderServiceSkel StateHolderServiceStub
+  INCLUDE_DIRS include
+  LIBRARIES StateHolder2 StateHolder2ServiceSkel StateHolder2ServiceStub
   CATKIN_DEPENDS rtmbuild2
   DEPENDS openrtm_aist
 )

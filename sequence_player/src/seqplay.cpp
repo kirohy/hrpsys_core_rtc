@@ -1,5 +1,5 @@
-#include "SequencePlayer/seqplay.h"
 #include <iostream>
+#include <sequence_player/seqplay.h>
 #include <unistd.h>
 
 seqplay::seqplay(unsigned int i_dof, double i_dt, unsigned int i_fnum, unsigned int optional_data_dim) : m_dof(i_dof) {

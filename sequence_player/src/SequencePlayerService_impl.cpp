@@ -1,7 +1,7 @@
-#include "SequencePlayer/SequencePlayerService_impl.h"
-#include "SequencePlayer/SequencePlayer.h"
 #include <cnoid/Body>
 #include <cnoid/Link>
+#include <sequence_player/SequencePlayer.h>
+#include <sequence_player/SequencePlayerService_impl.h>
 
 SequencePlayerService_impl::SequencePlayerService_impl() : m_player(NULL) {}
 

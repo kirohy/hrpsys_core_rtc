@@ -3,7 +3,6 @@ project(sequence_player)
 
 add_compile_options(-std=c++11)
 set(CMAKE_BUILD_TYPE Release)
-add_definitions(-Wno-deprecated)
 
 find_package(catkin REQUIRED COMPONENTS
   rtmbuild2
@@ -14,8 +13,8 @@ find_package(catkin REQUIRED COMPONENTS
 rtmbuild2_init(rtmbuild2)
 
 catkin_package(
-#  INCLUDE_DIRS include
-  LIBRARIES SequencePlayerServiceSkel SequencePlayerServiceStub
+  INCLUDE_DIRS include
+  LIBRARIES SequencePlayer2 SequencePlayer2ServiceSkel SequencePlayer2ServiceStub
   CATKIN_DEPENDS rtmbuild2
   DEPENDS openrtm_aist
 )

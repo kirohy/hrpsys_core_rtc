@@ -1,8 +1,8 @@
-#include "SequencePlayer/interpolator.h"
 #include <cmath>
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <sequence_player/interpolator.h>
 
 interpolator::interpolator(int dim_, double dt_, interpolation_mode imode_, double default_avg_vel_) {
     imode  = imode_;

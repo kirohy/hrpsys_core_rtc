@@ -1,7 +1,7 @@
 #ifndef SEQPLAYSERVICESVC_IMPL_H
 #define SEQPLAYSERVICESVC_IMPL_H
 
-#include "sequence_player/idl/SequencePlayerService.hh"
+#include <sequence_player/idl/SequencePlayer2Service.hh>
 
 using namespace OpenHRP;
 

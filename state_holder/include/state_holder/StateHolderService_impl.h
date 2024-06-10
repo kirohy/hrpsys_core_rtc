@@ -1,7 +1,7 @@
 #ifndef STATEHOLDERSERVICE_IMPL_H
 #define STATEHOLDERSERVICE_IMPL_H
 
-#include "state_holder/idl/StateHolderService.hh"
+#include <state_holder/idl/StateHolder2Service.hh>
 
 using namespace OpenHRP;
 

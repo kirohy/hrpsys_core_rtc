@@ -1,6 +1,6 @@
-#include "SequencePlayer/SequencePlayer.h"
 #include <iostream>
 #include <rtm/Manager.h>
+#include <sequence_player/SequencePlayer.h>
 #include <string>
 
 

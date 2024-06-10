@@ -1,5 +1,5 @@
-#include "StateHolder/StateHolderService_impl.h"
-#include "StateHolder/StateHolder.h"
+#include <state_holder/StateHolder.h>
+#include <state_holder/StateHolderService_impl.h>
 
 StateHolderService_impl::StateHolderService_impl() : m_comp(NULL) {}
 

@@ -4,6 +4,7 @@ find_package(PkgConfig)
 pkg_check_modules(openrtm_aist openrtm-aist REQUIRED)
 
 add_compile_options(-std=c++14)
+add_definitions(-Wno-deprecated)
 set(CMAKE_BUILD_TYPE Release)
 
 include_directories(
@@ -18,28 +19,32 @@ link_directories(
   ${openrtm_aist_LIBRARY_DIRS}
 )
 
-add_library(StateHolder SHARED
+add_library(StateHolder2 SHARED
   StateHolder.cpp
   StateHolderService_impl.cpp
   TimeKeeperService_impl.cpp
 )
 
-target_link_libraries(StateHolder
+target_link_libraries(StateHolder2
   ${catkin_LIBRARIES}
   ${CHOREONOID_BODY_LIBRARIES}
   ${openrtm_aist_LIBRARIES}
   ${${PROJECT_NAME}_IDLLIBRARY_DIRS}
 )
 
-set_target_properties(StateHolder PROPERTIES PREFIX "")
-add_dependencies(StateHolder RTMBUILD2_${PROJECT_NAME}_genrpc)
+set_target_properties(StateHolder2 PROPERTIES PREFIX "")
+add_dependencies(StateHolder2 RTMBUILD2_${PROJECT_NAME}_genrpc)
 
-add_executable(StateHolderComp StateHolderComp.cpp)
-target_link_libraries(StateHolderComp StateHolder)
+add_executable(StateHolder2Comp StateHolderComp.cpp)
+target_link_libraries(StateHolder2Comp StateHolder2)
 
-install(TARGETS StateHolder
+install(TARGETS StateHolder2
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+)
+
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
 

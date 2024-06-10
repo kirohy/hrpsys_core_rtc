@@ -5,8 +5,8 @@
 #include "timeUtil.h"
 #include <fstream>
 #include <map>
-#include <vector>
 #include <memory>
+#include <vector>
 
 class seqplay {
   public:
@@ -62,7 +62,7 @@ class seqplay {
         groupInterpolator(const std::vector<int> &i_indices, double i_dt) : indices(i_indices), state(created) {
             inter = std::make_shared<interpolator>(i_indices.size(), i_dt);
         }
-        ~groupInterpolator() { }
+        ~groupInterpolator() {}
         void get(double *full, double *dfull = NULL, bool popp = true) {
             if (state == created) return;
             if (state == removing) {

@@ -7,6 +7,7 @@ find_package(PkgConfig)
 pkg_check_modules(openrtm_aist openrtm-aist REQUIRED)
 
 add_compile_options(-std=c++14)
+add_definitions(-Wno-deprecated)
 set(CMAKE_BUILD_TYPE Release)
 
 include_directories(
@@ -21,7 +22,7 @@ link_directories(
   ${openrtm_aist_LIBRARY_DIRS}
 )
 
-add_library(SequencePlayer SHARED
+add_library(SequencePlayer2 SHARED
   SequencePlayer.cpp
   SequencePlayerService_impl.cpp
   interpolator.cpp
@@ -29,22 +30,26 @@ add_library(SequencePlayer SHARED
   timeUtil.cpp
 )
 
-target_link_libraries(SequencePlayer
+target_link_libraries(SequencePlayer2
   ${catkin_LIBRARIES}
   ${CHOREONOID_BODY_LIBRARIES}
   ${openrtm_aist_LIBRARIES}
   ${${PROJECT_NAME}_IDLLIBRARY_DIRS}
 )
 
-set_target_properties(SequencePlayer PROPERTIES PREFIX "")
-add_dependencies(SequencePlayer RTMBUILD2_${PROJECT_NAME}_genrpc)
+set_target_properties(SequencePlayer2 PROPERTIES PREFIX "")
+add_dependencies(SequencePlayer2 RTMBUILD2_${PROJECT_NAME}_genrpc)
 
-add_executable(SequencePlayerComp SequencePlayerComp.cpp)
-target_link_libraries(SequencePlayerComp SequencePlayer)
+add_executable(SequencePlayer2Comp SequencePlayerComp.cpp)
+target_link_libraries(SequencePlayer2Comp SequencePlayer2)
 
-install(TARGETS SequencePlayer
+install(TARGETS SequencePlayer2
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+)
+
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
 
