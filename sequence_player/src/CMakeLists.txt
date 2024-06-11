@@ -1,3 +1,7 @@
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_BUILD_TYPE Release)
+add_definitions(-Wno-deprecated)
+
 find_package(catkin REQUIRED COMPONENTS
   cpp_filters
 )
@@ -5,10 +9,6 @@ find_package(choreonoid REQUIRED)
 
 find_package(PkgConfig)
 pkg_check_modules(openrtm_aist openrtm-aist REQUIRED)
-
-add_compile_options(-std=c++14)
-add_definitions(-Wno-deprecated)
-set(CMAKE_BUILD_TYPE Release)
 
 include_directories(
   ${PROJECT_SOURCE_DIR}/include
@@ -23,8 +23,8 @@ link_directories(
 )
 
 add_library(SequencePlayer2 SHARED
-  SequencePlayer.cpp
-  SequencePlayerService_impl.cpp
+  SequencePlayer2.cpp
+  SequencePlayer2Service_impl.cpp
   interpolator.cpp
   seqplay.cpp
   timeUtil.cpp
@@ -40,7 +40,7 @@ target_link_libraries(SequencePlayer2
 set_target_properties(SequencePlayer2 PROPERTIES PREFIX "")
 add_dependencies(SequencePlayer2 RTMBUILD2_${PROJECT_NAME}_genrpc)
 
-add_executable(SequencePlayer2Comp SequencePlayerComp.cpp)
+add_executable(SequencePlayer2Comp SequencePlayer2Comp.cpp)
 target_link_libraries(SequencePlayer2Comp SequencePlayer2)
 
 install(TARGETS SequencePlayer2

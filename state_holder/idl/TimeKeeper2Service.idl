@@ -4,7 +4,7 @@
  */
 module OpenHRP
 {
-  interface TimeKeeperService
+  interface TimeKeeper2Service
   {
     /**
        @brief wait for \em tm [s]

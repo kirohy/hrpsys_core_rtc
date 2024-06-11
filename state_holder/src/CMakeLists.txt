@@ -1,11 +1,11 @@
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_BUILD_TYPE Release)
+add_definitions(-Wno-deprecated)
+
 find_package(choreonoid REQUIRED)
 
 find_package(PkgConfig)
 pkg_check_modules(openrtm_aist openrtm-aist REQUIRED)
-
-add_compile_options(-std=c++14)
-add_definitions(-Wno-deprecated)
-set(CMAKE_BUILD_TYPE Release)
 
 include_directories(
   ${PROJECT_SOURCE_DIR}/include
@@ -20,9 +20,9 @@ link_directories(
 )
 
 add_library(StateHolder2 SHARED
-  StateHolder.cpp
-  StateHolderService_impl.cpp
-  TimeKeeperService_impl.cpp
+  StateHolder2.cpp
+  StateHolder2Service_impl.cpp
+  TimeKeeper2Service_impl.cpp
 )
 
 target_link_libraries(StateHolder2
@@ -35,7 +35,7 @@ target_link_libraries(StateHolder2
 set_target_properties(StateHolder2 PROPERTIES PREFIX "")
 add_dependencies(StateHolder2 RTMBUILD2_${PROJECT_NAME}_genrpc)
 
-add_executable(StateHolder2Comp StateHolderComp.cpp)
+add_executable(StateHolder2Comp StateHolder2Comp.cpp)
 target_link_libraries(StateHolder2Comp StateHolder2)
 
 install(TARGETS StateHolder2

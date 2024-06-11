@@ -1,11 +1,11 @@
 #include <iostream>
 #include <rtm/Manager.h>
-#include <sequence_player/SequencePlayer.h>
+#include <sequence_player/SequencePlayer2.h>
 #include <string>
 
 
 void MyModuleInit(RTC::Manager *manager) {
-    SequencePlayerInit(manager);
+    SequencePlayer2Init(manager);
     RTC::RtcBase *comp;
 
     // Create a component

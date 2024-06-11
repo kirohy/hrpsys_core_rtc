@@ -1,9 +1,9 @@
-#include <robot_hardware/RobotHardwareService_impl.h>
+#include <robot_hardware/RobotHardware2Service_impl.h>
 #include <robot_hardware/robot.h>
 
-RobotHardwareService_impl::RobotHardwareService_impl() : m_robot(std::shared_ptr<robot>()) {}
+RobotHardware2Service_impl::RobotHardware2Service_impl() : m_robot(std::shared_ptr<robot>()) {}
 
-RobotHardwareService_impl::~RobotHardwareService_impl() {}
+RobotHardware2Service_impl::~RobotHardware2Service_impl() {}
 
 #define GetStatus                                                                                                                                              \
                                                                                                                                                                \
@@ -27,15 +27,15 @@ RobotHardwareService_impl::~RobotHardwareService_impl() {}
         rs->servoState[i].length(len);                                                                                                                         \
         status = 0;                                                                                                                                            \
         v      = m_robot->readCalibState(i);                                                                                                                   \
-        status |= v << OpenHRP::RobotHardwareService::CALIB_STATE_SHIFT;                                                                                       \
+        status |= v << OpenHRP::RobotHardware2Service::CALIB_STATE_SHIFT;                                                                                      \
         v = m_robot->readPowerState(i);                                                                                                                        \
-        status |= v << OpenHRP::RobotHardwareService::POWER_STATE_SHIFT;                                                                                       \
+        status |= v << OpenHRP::RobotHardware2Service::POWER_STATE_SHIFT;                                                                                      \
         v = m_robot->readServoState(i);                                                                                                                        \
-        status |= v << OpenHRP::RobotHardwareService::SERVO_STATE_SHIFT;                                                                                       \
+        status |= v << OpenHRP::RobotHardware2Service::SERVO_STATE_SHIFT;                                                                                      \
         v = m_robot->readServoAlarm(i);                                                                                                                        \
-        status |= v << OpenHRP::RobotHardwareService::SERVO_ALARM_SHIFT;                                                                                       \
+        status |= v << OpenHRP::RobotHardware2Service::SERVO_ALARM_SHIFT;                                                                                      \
         v = m_robot->readDriverTemperature(i);                                                                                                                 \
-        status |= v << OpenHRP::RobotHardwareService::DRIVER_TEMP_SHIFT;                                                                                       \
+        status |= v << OpenHRP::RobotHardware2Service::DRIVER_TEMP_SHIFT;                                                                                      \
         rs->servoState[i][0] = status;                                                                                                                         \
         m_robot->readExtraServoState(i, (int *)(rs->servoState[i].get_buffer() + 1));                                                                          \
     }                                                                                                                                                          \
@@ -60,14 +60,14 @@ RobotHardwareService_impl::~RobotHardwareService_impl() {}
                                                                                                                                                                \
     m_robot->readPowerStatus(rs->voltage, rs->current);
 
-void RobotHardwareService_impl::getStatus(OpenHRP::RobotHardwareService::RobotState_out rs) {
-    rs = new OpenHRP::RobotHardwareService::RobotState();
+void RobotHardware2Service_impl::getStatus(OpenHRP::RobotHardware2Service::RobotState_out rs) {
+    rs = new OpenHRP::RobotHardware2Service::RobotState();
 
     GetStatus;
 }
 
-void RobotHardwareService_impl::getStatus2(OpenHRP::RobotHardwareService::RobotState2_out rs) {
-    rs = new OpenHRP::RobotHardwareService::RobotState2();
+void RobotHardware2Service_impl::getStatus2(OpenHRP::RobotHardware2Service::RobotState2_out rs) {
+    rs = new OpenHRP::RobotHardware2Service::RobotState2();
 
     GetStatus;
 
@@ -83,39 +83,41 @@ void RobotHardwareService_impl::getStatus2(OpenHRP::RobotHardwareService::RobotS
 #endif
 }
 
-CORBA::Boolean RobotHardwareService_impl::power(const char *jname, OpenHRP::RobotHardwareService::SwitchStatus ss) {
-    return m_robot->power(jname, ss == OpenHRP::RobotHardwareService::SWITCH_ON);
+CORBA::Boolean RobotHardware2Service_impl::power(const char *jname, OpenHRP::RobotHardware2Service::SwitchStatus ss) {
+    return m_robot->power(jname, ss == OpenHRP::RobotHardware2Service::SWITCH_ON);
 }
 
-CORBA::Boolean RobotHardwareService_impl::servo(const char *jname, OpenHRP::RobotHardwareService::SwitchStatus ss) {
-    return m_robot->servo(jname, ss == OpenHRP::RobotHardwareService::SWITCH_ON);
+CORBA::Boolean RobotHardware2Service_impl::servo(const char *jname, OpenHRP::RobotHardware2Service::SwitchStatus ss) {
+    return m_robot->servo(jname, ss == OpenHRP::RobotHardware2Service::SWITCH_ON);
 }
 
-void RobotHardwareService_impl::calibrateInertiaSensor() { m_robot->startInertiaSensorCalibration(); }
+void RobotHardware2Service_impl::calibrateInertiaSensor() { m_robot->startInertiaSensorCalibration(); }
 
-void RobotHardwareService_impl::removeForceSensorOffset() { m_robot->removeForceSensorOffset(); }
+void RobotHardware2Service_impl::removeForceSensorOffset() { m_robot->removeForceSensorOffset(); }
 
-void RobotHardwareService_impl::initializeJointAngle(const char *name, const char *option) { m_robot->initializeJointAngle(name, option); }
+void RobotHardware2Service_impl::initializeJointAngle(const char *name, const char *option) { m_robot->initializeJointAngle(name, option); }
 
-void RobotHardwareService_impl::setServoGainPercentage(const char *jname, double percentage) { m_robot->setServoGainPercentage(jname, percentage, 0); }
+void RobotHardware2Service_impl::setServoGainPercentage(const char *jname, double percentage) { m_robot->setServoGainPercentage(jname, percentage, 0); }
 
-void RobotHardwareService_impl::setServoPGainPercentage(const char *jname, double percentage) { m_robot->setServoGainPercentage(jname, percentage, 1); }
+void RobotHardware2Service_impl::setServoPGainPercentage(const char *jname, double percentage) { m_robot->setServoGainPercentage(jname, percentage, 1); }
 
-void RobotHardwareService_impl::setServoDGainPercentage(const char *jname, double percentage) { m_robot->setServoGainPercentage(jname, percentage, 2); }
+void RobotHardware2Service_impl::setServoDGainPercentage(const char *jname, double percentage) { m_robot->setServoGainPercentage(jname, percentage, 2); }
 
-void RobotHardwareService_impl::setServoPGainPercentageWithTime(const char *jname, double percentage, double time) {
+void RobotHardware2Service_impl::setServoPGainPercentageWithTime(const char *jname, double percentage, double time) {
     m_robot->setServoGainPercentage(jname, percentage, 1, time);
 }
 
-void RobotHardwareService_impl::setServoDGainPercentageWithTime(const char *jname, double percentage, double time) {
+void RobotHardware2Service_impl::setServoDGainPercentageWithTime(const char *jname, double percentage, double time) {
     m_robot->setServoGainPercentage(jname, percentage, 2, time);
 }
 
-void RobotHardwareService_impl::setServoTorqueGainPercentage(const char *jname, double percentage) { m_robot->setServoTorqueGainPercentage(jname, percentage); }
+void RobotHardware2Service_impl::setServoTorqueGainPercentage(const char *jname, double percentage) {
+    m_robot->setServoTorqueGainPercentage(jname, percentage);
+}
 
-void RobotHardwareService_impl::setServoErrorLimit(const char *jname, double limit) { m_robot->setServoErrorLimit(jname, limit); }
+void RobotHardware2Service_impl::setServoErrorLimit(const char *jname, double limit) { m_robot->setServoErrorLimit(jname, limit); }
 
-CORBA::Boolean RobotHardwareService_impl::addJointGroup(const char *gname, const OpenHRP::RobotHardwareService::StrSequence &jnames) {
+CORBA::Boolean RobotHardware2Service_impl::addJointGroup(const char *gname, const OpenHRP::RobotHardware2Service::StrSequence &jnames) {
     std::vector<std::string> joints;
     joints.resize(jnames.length());
     for (unsigned int i = 0; i < jnames.length(); i++) {
@@ -124,59 +126,59 @@ CORBA::Boolean RobotHardwareService_impl::addJointGroup(const char *gname, const
     return m_robot->addJointGroup(gname, joints);
 }
 
-CORBA::Boolean RobotHardwareService_impl::readDigitalInput(::OpenHRP::RobotHardwareService::OctSequence_out din) {
-    din = new ::OpenHRP::RobotHardwareService::OctSequence();
+CORBA::Boolean RobotHardware2Service_impl::readDigitalInput(::OpenHRP::RobotHardware2Service::OctSequence_out din) {
+    din = new ::OpenHRP::RobotHardware2Service::OctSequence();
     din->length(lengthDigitalInput());
     return m_robot->readDigitalInput((char *)(din->get_buffer()));
 }
 
-CORBA::Long RobotHardwareService_impl::lengthDigitalInput() { return m_robot->lengthDigitalInput(); }
+CORBA::Long RobotHardware2Service_impl::lengthDigitalInput() { return m_robot->lengthDigitalInput(); }
 
-CORBA::Boolean RobotHardwareService_impl::writeDigitalOutput(const ::OpenHRP::RobotHardwareService::OctSequence &dout) {
+CORBA::Boolean RobotHardware2Service_impl::writeDigitalOutput(const ::OpenHRP::RobotHardware2Service::OctSequence &dout) {
     return m_robot->writeDigitalOutput((const char *)(dout.get_buffer()));
 }
 
-CORBA::Boolean RobotHardwareService_impl::writeDigitalOutputWithMask(const ::OpenHRP::RobotHardwareService::OctSequence &dout,
-                                                                     const ::OpenHRP::RobotHardwareService::OctSequence &mask) {
+CORBA::Boolean RobotHardware2Service_impl::writeDigitalOutputWithMask(const ::OpenHRP::RobotHardware2Service::OctSequence &dout,
+                                                                      const ::OpenHRP::RobotHardware2Service::OctSequence &mask) {
     return m_robot->writeDigitalOutputWithMask((const char *)(dout.get_buffer()), (const char *)(mask.get_buffer()));
 }
 
-CORBA::Long RobotHardwareService_impl::lengthDigitalOutput() { return m_robot->lengthDigitalOutput(); }
+CORBA::Long RobotHardware2Service_impl::lengthDigitalOutput() { return m_robot->lengthDigitalOutput(); }
 
-CORBA::Boolean RobotHardwareService_impl::readDigitalOutput(::OpenHRP::RobotHardwareService::OctSequence_out dout) {
-    dout = new ::OpenHRP::RobotHardwareService::OctSequence();
+CORBA::Boolean RobotHardware2Service_impl::readDigitalOutput(::OpenHRP::RobotHardware2Service::OctSequence_out dout) {
+    dout = new ::OpenHRP::RobotHardware2Service::OctSequence();
     dout->length(lengthDigitalOutput());
     return m_robot->readDigitalOutput((char *)(dout->get_buffer()));
 }
 
-CORBA::Boolean RobotHardwareService_impl::setJointInertia(const char *name, ::CORBA::Double mn) { return m_robot->setJointInertia(name, mn); }
+CORBA::Boolean RobotHardware2Service_impl::setJointInertia(const char *name, ::CORBA::Double mn) { return m_robot->setJointInertia(name, mn); }
 
-void RobotHardwareService_impl::setJointInertias(const ::OpenHRP::RobotHardwareService::DblSequence &mns) { m_robot->setJointInertias(mns.get_buffer()); }
+void RobotHardware2Service_impl::setJointInertias(const ::OpenHRP::RobotHardware2Service::DblSequence &mns) { m_robot->setJointInertias(mns.get_buffer()); }
 
 
-void RobotHardwareService_impl::enableDisturbanceObserver() { m_robot->enableDisturbanceObserver(); }
+void RobotHardware2Service_impl::enableDisturbanceObserver() { m_robot->enableDisturbanceObserver(); }
 
-void RobotHardwareService_impl::disableDisturbanceObserver() { m_robot->disableDisturbanceObserver(); }
+void RobotHardware2Service_impl::disableDisturbanceObserver() { m_robot->disableDisturbanceObserver(); }
 
-void RobotHardwareService_impl::setDisturbanceObserverGain(::CORBA::Double gain) { m_robot->setDisturbanceObserverGain(gain); }
+void RobotHardware2Service_impl::setDisturbanceObserverGain(::CORBA::Double gain) { m_robot->setDisturbanceObserverGain(gain); }
 
-void RobotHardwareService_impl::setJointControlMode(const char *jname, OpenHRP::RobotHardwareService::JointControlMode jcm) {
+void RobotHardware2Service_impl::setJointControlMode(const char *jname, OpenHRP::RobotHardware2Service::JointControlMode jcm) {
     joint_control_mode mode;
     switch (jcm) {
-    case OpenHRP::RobotHardwareService::FREE:
+    case OpenHRP::RobotHardware2Service::FREE:
         mode = JCM_FREE;
         break;
-    case OpenHRP::RobotHardwareService::POSITION:
+    case OpenHRP::RobotHardware2Service::POSITION:
         mode = JCM_POSITION;
         break;
-    case OpenHRP::RobotHardwareService::TORQUE:
+    case OpenHRP::RobotHardware2Service::TORQUE:
         mode = JCM_TORQUE;
         break;
-    case OpenHRP::RobotHardwareService::VELOCITY:
+    case OpenHRP::RobotHardware2Service::VELOCITY:
         mode = JCM_VELOCITY;
         break;
 #if defined(ROBOT_IOB_VERSION) && ROBOT_IOB_VERSION >= 4
-    case OpenHRP::RobotHardwareService::POSITION_TORQUE:
+    case OpenHRP::RobotHardware2Service::POSITION_TORQUE:
         mode = JCM_POSITION_TORQUE;
         break;
 #endif

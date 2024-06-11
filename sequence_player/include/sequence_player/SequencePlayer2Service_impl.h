@@ -5,12 +5,12 @@
 
 using namespace OpenHRP;
 
-class SequencePlayer;
+class SequencePlayer2;
 
-class SequencePlayerService_impl : public virtual POA_OpenHRP::SequencePlayerService, public virtual PortableServer::RefCountServantBase {
+class SequencePlayer2Service_impl : public virtual POA_OpenHRP::SequencePlayer2Service, public virtual PortableServer::RefCountServantBase {
   public:
-    SequencePlayerService_impl();
-    virtual ~SequencePlayerService_impl();
+    SequencePlayer2Service_impl();
+    virtual ~SequencePlayer2Service_impl();
     //
     void waitInterpolation();
     CORBA::Boolean waitInterpolationOfGroup(const char *gname);
@@ -34,9 +34,9 @@ class SequencePlayerService_impl : public virtual POA_OpenHRP::SequencePlayerSer
     void playPattern(const dSequenceSequence &pos, const dSequenceSequence &rpy, const dSequenceSequence &zmp, const dSequence &tm);
     void clear();
     void clearNoWait();
-    CORBA::Boolean setInterpolationMode(OpenHRP::SequencePlayerService::interpolationMode i_mode_);
+    CORBA::Boolean setInterpolationMode(OpenHRP::SequencePlayer2Service::interpolationMode i_mode_);
     CORBA::Boolean setInitialState();
-    CORBA::Boolean addJointGroup(const char *gname, const OpenHRP::SequencePlayerService::StrSequence &jnames);
+    CORBA::Boolean addJointGroup(const char *gname, const OpenHRP::SequencePlayer2Service::StrSequence &jnames);
     CORBA::Boolean removeJointGroup(const char *gname);
     CORBA::Boolean setJointAnglesOfGroup(const char *gname, const dSequence &jvs, CORBA::Double tm);
     CORBA::Boolean setJointAnglesSequenceOfGroup(const char *gname, const dSequenceSequence &jvs, const dSequence &tms);
@@ -46,8 +46,8 @@ class SequencePlayerService_impl : public virtual POA_OpenHRP::SequencePlayerSer
     void setMaxIKError(CORBA::Double pos, CORBA::Double rot);
     void setMaxIKIteration(CORBA::Short iter);
     //
-    void player(SequencePlayer *i_player);
-    SequencePlayer *m_player;
+    void player(SequencePlayer2 *i_player);
+    SequencePlayer2 *m_player;
 };
 
 #endif

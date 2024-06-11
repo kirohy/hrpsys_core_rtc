@@ -1,21 +1,15 @@
 #include <iostream>
-#include <robot_hardware/RobotHardware.h>
 #include <rtm/Manager.h>
-#include <rtm/ModuleManager.h>
+#include <state_holder/StateHolder2.h>
 #include <string>
 
 
 void MyModuleInit(RTC::Manager *manager) {
-    RobotHardwareInit(manager);
+    StateHolder2Init(manager);
     RTC::RtcBase *comp;
 
     // Create a component
-    comp = manager->createComponent("RobotHardware2");
-
-
-    // Example
-    // The following procedure is examples how handle RT-Components.
-    // These should not be in this function.
+    comp = manager->createComponent("StateHolder2");
 
     // Get the component's object reference
     RTC::RTObject_var rtobj;
@@ -60,15 +54,6 @@ int main(int argc, char **argv) {
 
     // Initialize manager
     manager->init(argc, argv);
-
-#ifndef __APPLE__
-    try {
-        manager->load("libhrpEC.so", "hrpECInit");
-    } catch (RTC::ModuleManager::NotFound &ex) { std::cerr << ex.name << std::endl; } catch (RTC::ModuleManager::Error &ex) {
-        std::cerr << ex.reason << std::endl;
-        std::cerr << dlerror() << std::endl;
-    } catch (...) { std::cerr << "exception in loading libhrpEC.so" << std::endl; }
-#endif
 
     // Set module initialization proceduer
     // This procedure will be invoked in activateManager() function.

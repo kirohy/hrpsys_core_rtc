@@ -4,7 +4,7 @@
  */
 module OpenHRP
 {
-  interface StateHolderService
+  interface StateHolder2Service
   {
     typedef sequence<double> DblSequence;
 

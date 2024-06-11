@@ -8,7 +8,7 @@ module OpenHRP
   typedef sequence<dSequence> dSequenceSequence;
   typedef sequence<boolean> bSequence;
   
-  interface SequencePlayerService
+  interface SequencePlayer2Service
   {
     typedef sequence<string> StrSequence;
 

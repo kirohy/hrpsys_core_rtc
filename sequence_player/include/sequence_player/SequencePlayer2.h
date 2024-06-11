@@ -1,10 +1,11 @@
-#ifndef SEQUENCEPLAYER_H
-#define SEQUENCEPLAYER_H
+#ifndef SEQUENCEPLAYER2_H
+#define SEQUENCEPLAYER2_H
 
-#include "SequencePlayerService_impl.h"
+#include "SequencePlayer2Service_impl.h"
 #include "seqplay.h"
 #include <cnoid/Body>
 #include <cnoid/EigenUtil>
+#include <memory>
 #include <mutex>
 #include <rtm/CorbaPort.h>
 #include <rtm/DataFlowComponentBase.h>
@@ -20,10 +21,10 @@
 #define RTC_INFO_STREAM(var) std::cout << "[" << m_profile.instance_name << "] " << var << std::endl;
 #define RTC_WARN_STREAM(var) std::cerr << "\x1b[31m[" << m_profile.instance_name << "] " << var << "\x1b[39m" << std::endl;
 
-class SequencePlayer : public RTC::DataFlowComponentBase {
+class SequencePlayer2 : public RTC::DataFlowComponentBase {
   public:
-    SequencePlayer(RTC::Manager *manager);
-    virtual ~SequencePlayer();
+    SequencePlayer2(RTC::Manager *manager);
+    virtual ~SequencePlayer2();
 
     virtual RTC::ReturnCode_t onInitialize();
 
@@ -56,9 +57,9 @@ class SequencePlayer : public RTC::DataFlowComponentBase {
     void loadPattern(const char *basename, double time);
     void playPattern(const OpenHRP::dSequenceSequence &pos, const OpenHRP::dSequenceSequence &rpy, const OpenHRP::dSequenceSequence &zmp,
                      const OpenHRP::dSequence &tm);
-    bool setInterpolationMode(OpenHRP::SequencePlayerService::interpolationMode i_mode_);
+    bool setInterpolationMode(OpenHRP::SequencePlayer2Service::interpolationMode i_mode_);
     bool setInitialState(double tm = 0.0);
-    bool addJointGroup(const char *gname, const OpenHRP::SequencePlayerService::StrSequence &jnames);
+    bool addJointGroup(const char *gname, const OpenHRP::SequencePlayer2Service::StrSequence &jnames);
     bool removeJointGroup(const char *gname);
     bool setJointAnglesOfGroup(const char *gname, const OpenHRP::dSequence &jvs, double tm);
     bool setJointAnglesSequenceOfGroup(const char *gname, const OpenHRP::dSequenceSequence angless, const OpenHRP::dSequence &times);
@@ -93,13 +94,13 @@ class SequencePlayer : public RTC::DataFlowComponentBase {
     RTC::TimedOrientation3D m_baseRpy;
     RTC::OutPort<RTC::TimedOrientation3D> m_baseRpyOut;
     std::vector<RTC::TimedDoubleSeq> m_wrenches;
-    std::vector<RTC::OutPort<RTC::TimedDoubleSeq> *> m_wrenchesOut;
+    std::vector<std::unique_ptr<RTC::OutPort<RTC::TimedDoubleSeq>>> m_wrenchesOut;
     RTC::TimedDoubleSeq m_optionalData;
     RTC::OutPort<RTC::TimedDoubleSeq> m_optionalDataOut;
 
-    RTC::CorbaPort m_SequencePlayerServicePort;
+    RTC::CorbaPort m_SequencePlayer2ServicePort;
 
-    SequencePlayerService_impl m_service0;
+    SequencePlayer2Service_impl m_service0;
 
   private:
     std::shared_ptr<seqplay> m_seq;
@@ -121,7 +122,7 @@ class SequencePlayer : public RTC::DataFlowComponentBase {
 
 
 extern "C" {
-void SequencePlayerInit(RTC::Manager *manager);
+void SequencePlayer2Init(RTC::Manager *manager);
 };
 
-#endif // SEQUENCEPLAYER_H
+#endif // SEQUENCEPLAYER2_H

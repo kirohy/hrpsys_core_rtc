@@ -7,11 +7,11 @@
  * $Id$
  */
 
-#ifndef ROBOT_HARDWARE_H
-#define ROBOT_HARDWARE_H
+#ifndef ROBOT_HARDWARE2_H
+#define ROBOT_HARDWARE2_H
 
 #include <cnoid/Body>
-#include <hrpsys_common/idl/HRPDataTypes2.hh>
+#include <hrpsys/idl/HRPDataTypes.hh>
 #include <memory>
 #include <robot_hardware/idl/RobotHardware2Service.hh>
 #include <rtm/CorbaPort.h>
@@ -25,7 +25,7 @@
 #include <rtm/idl/ExtendedDataTypesSkel.h>
 #include <time.h>
 
-#include "RobotHardwareService_impl.h"
+#include "RobotHardware2Service_impl.h"
 
 #define RTC_INFO_STREAM(var) std::cout << "[" << m_profile.instance_name << "] " << var << std::endl;
 #define RTC_WARN_STREAM(var) std::cerr << "\x1b[31m[" << m_profile.instance_name << "] " << var << "\x1b[39m" << std::endl;
@@ -35,17 +35,17 @@ class robot;
 /**
    \brief RT component that do nothing and don't have ports. This component is used to create an execution context
  */
-class RobotHardware : public RTC::DataFlowComponentBase {
+class RobotHardware2 : public RTC::DataFlowComponentBase {
   public:
     /**
        \brief Constructor
        \param manager pointer to the Manager
     */
-    RobotHardware(RTC::Manager *manager);
+    RobotHardware2(RTC::Manager *manager);
     /**
        \brief Destructor
     */
-    virtual ~RobotHardware();
+    virtual ~RobotHardware2();
 
     // The initialize action (on CREATED->ALIVE transition)
     // formaer rtc_init_entry()
@@ -95,11 +95,6 @@ class RobotHardware : public RTC::DataFlowComponentBase {
     // no corresponding operation exists in OpenRTm-aist-0.2.0
     // virtual RTC::ReturnCode_t onRateChanged(RTC::UniqueId ec_id);
 
-    // virtual inline void getTimeNow(Time &tm) {
-    //     coil::TimeValue coiltm(coil::gettimeofday());
-    //     tm.sec  = coiltm.sec();
-    //     tm.nsec = coiltm.usec() * 1000;
-    // };
     virtual inline void getTimeNow(RTC::Time &tm) {
         struct timespec ts;
         clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -177,7 +172,7 @@ class RobotHardware : public RTC::DataFlowComponentBase {
     std::vector<RTC::TimedDoubleSeq> m_force;
     OpenHRP::TimedLongSeqSeq m_servoState;
     RTC::TimedLong m_emergencySignal;
-    OpenHRP::RobotHardwareService::TimedRobotState2 m_rstate2;
+    OpenHRP::RobotHardware2Service::TimedRobotState2 m_rstate2;
 
     // DataOutPort declaration
     // <rtc-template block="outport_declare">
@@ -191,19 +186,19 @@ class RobotHardware : public RTC::DataFlowComponentBase {
     std::vector<std::unique_ptr<RTC::OutPort<RTC::TimedDoubleSeq>>> m_forceOut;
     RTC::OutPort<OpenHRP::TimedLongSeqSeq> m_servoStateOut;
     RTC::OutPort<RTC::TimedLong> m_emergencySignalOut;
-    RTC::OutPort<OpenHRP::RobotHardwareService::TimedRobotState2> m_rstate2Out;
+    RTC::OutPort<OpenHRP::RobotHardware2Service::TimedRobotState2> m_rstate2Out;
 
     // </rtc-template>
 
     // CORBA Port declaration
     // <rtc-template block="corbaport_declare">
-    RTC::CorbaPort m_RobotHardwareServicePort;
+    RTC::CorbaPort m_RobotHardware2ServicePort;
 
     // </rtc-template>
 
     // Service declaration
     // <rtc-template block="service_declare">
-    RobotHardwareService_impl m_service0;
+    RobotHardware2Service_impl m_service0;
 
     // </rtc-template>
 
@@ -215,7 +210,7 @@ class RobotHardware : public RTC::DataFlowComponentBase {
     robot *robot_ptr(void) { return m_robot.get(); };
 
   private:
-    void getStatus2(OpenHRP::RobotHardwareService::RobotState2 &rstate2);
+    void getStatus2(OpenHRP::RobotHardware2Service::RobotState2 &rstate2);
 
     int dummy;
     std::shared_ptr<robot> m_robot;
@@ -223,7 +218,7 @@ class RobotHardware : public RTC::DataFlowComponentBase {
 
 
 extern "C" {
-void RobotHardwareInit(RTC::Manager *manager);
+void RobotHardware2Init(RTC::Manager *manager);
 };
 
-#endif // ROBOT_HARDWARE_H
+#endif // ROBOT_HARDWARE2_H

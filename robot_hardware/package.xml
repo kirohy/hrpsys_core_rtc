@@ -13,6 +13,5 @@
   <depend>roscpp</depend>
   <depend>rtmbuild2</depend>
   <depend>choreonoid</depend>
-  <depend>hrpsys_common</depend>
   <depend>hrpsys_trans_bridge</depend>
 </package>

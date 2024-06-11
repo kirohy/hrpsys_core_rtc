@@ -7,7 +7,7 @@
 
 module OpenHRP
 {
-  interface RobotHardwareService
+  interface RobotHardware2Service
   {
     const unsigned long CALIB_STATE_MASK = 0x00000001;
     const unsigned long CALIB_STATE_SHIFT = 0;

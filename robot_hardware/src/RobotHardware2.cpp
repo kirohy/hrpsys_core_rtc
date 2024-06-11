@@ -1,31 +1,31 @@
 #include <cnoid/BodyLoader>
-#include <robot_hardware/RobotHardware.h>
+#include <robot_hardware/RobotHardware2.h>
 #include <robot_hardware/robot.h>
 #include <rtm/CorbaNaming.h>
 
-static const char *robothardware_spec[] = {"implementation_id", "RobotHardware2", "type_name", "RobotHardware2", "description", "RobotHardware2", "version",
-                                           "1.0.0", "vendor", "AIST", "category", "example", "activity_type", "DataFlowComponent", "max_instance", "1",
-                                           "language", "C++", "lang_type", "compile",
-                                           // Configuration variables
-                                           "conf.default.isDemoMode", "0", "conf.default.fzLimitRatio", "2.0", "conf.default.servoErrorLimit", ",",
-                                           "conf.default.jointAccelerationLimit", "0", "conf.default.servoOnDelay", "0",
+static const char *robothardware2_spec[] = {"implementation_id", "RobotHardware2", "type_name", "RobotHardware2", "description", "RobotHardware2", "version",
+                                            "1.0.0", "vendor", "AIST", "category", "example", "activity_type", "DataFlowComponent", "max_instance", "1",
+                                            "language", "C++", "lang_type", "compile",
+                                            // Configuration variables
+                                            "conf.default.isDemoMode", "0", "conf.default.fzLimitRatio", "2.0", "conf.default.servoErrorLimit", ",",
+                                            "conf.default.jointAccelerationLimit", "0", "conf.default.servoOnDelay", "0",
 
-                                           ""};
+                                            ""};
 // </rtc-template>
 
-RobotHardware::RobotHardware(RTC::Manager *manager)
+RobotHardware2::RobotHardware2(RTC::Manager *manager)
     : RTC::DataFlowComponentBase(manager),
       // <rtc-template block="initializer">
       m_isDemoMode(0), m_qRefIn("qRef", m_qRef), m_dqRefIn("dqRef", m_dqRef), m_ddqRefIn("ddqRef", m_ddqRef), m_tauRefIn("tauRef", m_tauRef), m_qOut("q", m_q),
       m_dqOut("dq", m_dq), m_tauOut("tau", m_tau), m_ctauOut("ctau", m_ctau), m_pdtauOut("pdtau", m_pdtau), m_servoStateOut("servoState", m_servoState),
-      m_emergencySignalOut("emergencySignal", m_emergencySignal), m_rstate2Out("rstate2", m_rstate2), m_RobotHardwareServicePort("RobotHardwareService"),
+      m_emergencySignalOut("emergencySignal", m_emergencySignal), m_rstate2Out("rstate2", m_rstate2), m_RobotHardware2ServicePort("RobotHardware2Service"),
       // </rtc-template>
       dummy(0) {}
 
-RobotHardware::~RobotHardware() {}
+RobotHardware2::~RobotHardware2() {}
 
 
-RTC::ReturnCode_t RobotHardware::onInitialize() {
+RTC::ReturnCode_t RobotHardware2::onInitialize() {
     RTC_INFO_STREAM("onInitialize()");
     // Registration: InPort/OutPort/Service
     // <rtc-template block="registration">
@@ -45,12 +45,12 @@ RTC::ReturnCode_t RobotHardware::onInitialize() {
     addOutPort("rstate2", m_rstate2Out);
 
     // Set service provider to Ports
-    m_RobotHardwareServicePort.registerProvider("service0", "RobotHardwareService", m_service0);
+    m_RobotHardware2ServicePort.registerProvider("service0", "RobotHardware2Service", m_service0);
 
     // Set service consumers to Ports
 
     // Set CORBA Service Ports
-    addPort(m_RobotHardwareServicePort);
+    addPort(m_RobotHardware2ServicePort);
 
     // </rtc-template>
 
@@ -190,7 +190,7 @@ RTC::ReturnCode_t RobotHardware::onDeactivated(RTC::UniqueId ec_id)
 }
 */
 
-RTC::ReturnCode_t RobotHardware::onExecute(RTC::UniqueId ec_id) {
+RTC::ReturnCode_t RobotHardware2::onExecute(RTC::UniqueId ec_id) {
     // std::cout << "RobotHardware:onExecute(" << ec_id << ")" << std::endl;
     RTC::Time tm;
     this->getTimeNow(tm);
@@ -280,15 +280,15 @@ RTC::ReturnCode_t RobotHardware::onExecute(RTC::UniqueId ec_id) {
         m_servoState.data[i].length(len);
         int status = 0, v;
         v          = m_robot->readCalibState(i);
-        status |= v << OpenHRP::RobotHardwareService::CALIB_STATE_SHIFT;
+        status |= v << OpenHRP::RobotHardware2Service::CALIB_STATE_SHIFT;
         v = m_robot->readPowerState(i);
-        status |= v << OpenHRP::RobotHardwareService::POWER_STATE_SHIFT;
+        status |= v << OpenHRP::RobotHardware2Service::POWER_STATE_SHIFT;
         v = m_robot->readServoState(i);
-        status |= v << OpenHRP::RobotHardwareService::SERVO_STATE_SHIFT;
+        status |= v << OpenHRP::RobotHardware2Service::SERVO_STATE_SHIFT;
         v = m_robot->readServoAlarm(i);
-        status |= v << OpenHRP::RobotHardwareService::SERVO_ALARM_SHIFT;
+        status |= v << OpenHRP::RobotHardware2Service::SERVO_ALARM_SHIFT;
         v = m_robot->readDriverTemperature(i);
-        status |= v << OpenHRP::RobotHardwareService::DRIVER_TEMP_SHIFT;
+        status |= v << OpenHRP::RobotHardware2Service::DRIVER_TEMP_SHIFT;
         m_servoState.data[i][0] = status;
         m_robot->readExtraServoState(i, (int *)(m_servoState.data[i].get_buffer() + 1));
     }
@@ -340,15 +340,15 @@ template <class T> void getStatus(std::shared_ptr<robot> robot, T &rstate) {
         rstate.servoState[i].length(len);
         status = 0;
         v      = robot->readCalibState(i);
-        status |= v << OpenHRP::RobotHardwareService::CALIB_STATE_SHIFT;
+        status |= v << OpenHRP::RobotHardware2Service::CALIB_STATE_SHIFT;
         v = robot->readPowerState(i);
-        status |= v << OpenHRP::RobotHardwareService::POWER_STATE_SHIFT;
+        status |= v << OpenHRP::RobotHardware2Service::POWER_STATE_SHIFT;
         v = robot->readServoState(i);
-        status |= v << OpenHRP::RobotHardwareService::SERVO_STATE_SHIFT;
+        status |= v << OpenHRP::RobotHardware2Service::SERVO_STATE_SHIFT;
         v = robot->readServoAlarm(i);
-        status |= v << OpenHRP::RobotHardwareService::SERVO_ALARM_SHIFT;
+        status |= v << OpenHRP::RobotHardware2Service::SERVO_ALARM_SHIFT;
         v = robot->readDriverTemperature(i);
-        status |= v << OpenHRP::RobotHardwareService::DRIVER_TEMP_SHIFT;
+        status |= v << OpenHRP::RobotHardware2Service::DRIVER_TEMP_SHIFT;
         rstate.servoState[i][0] = status;
         robot->readExtraServoState(i, (int *)(rstate.servoState[i].get_buffer() + 1));
     }
@@ -374,7 +374,7 @@ template <class T> void getStatus(std::shared_ptr<robot> robot, T &rstate) {
     robot->readPowerStatus(rstate.voltage, rstate.current);
 }
 
-void RobotHardware::getStatus2(OpenHRP::RobotHardwareService::RobotState2 &rstate2) {
+void RobotHardware2::getStatus2(OpenHRP::RobotHardware2Service::RobotState2 &rstate2) {
     getStatus(m_robot, rstate2);
 #if defined(ROBOT_IOB_VERSION) && ROBOT_IOB_VERSION >= 2
     rstate2.batteries.length(m_robot->numBatteries());
@@ -423,7 +423,7 @@ RTC::ReturnCode_t RobotHardware::onRateChanged(RTC::UniqueId ec_id)
 }
 */
 
-bool RobotHardware::getProperty(const std::string &key, std::string &ret) {
+bool RobotHardware2::getProperty(const std::string &key, std::string &ret) {
     if (this->getProperties().hasKey(key.c_str())) {
         ret = std::string(this->getProperties()[key.c_str()]);
     } else if (this->m_pManager->getConfig().hasKey(key.c_str())) {
@@ -438,8 +438,8 @@ bool RobotHardware::getProperty(const std::string &key, std::string &ret) {
 
 extern "C" {
 
-void RobotHardwareInit(RTC::Manager *manager) {
-    RTC::Properties profile(robothardware_spec);
-    manager->registerFactory(profile, RTC::Create<RobotHardware>, RTC::Delete<RobotHardware>);
+void RobotHardware2Init(RTC::Manager *manager) {
+    RTC::Properties profile(robothardware2_spec);
+    manager->registerFactory(profile, RTC::Create<RobotHardware2>, RTC::Delete<RobotHardware2>);
 }
 };
