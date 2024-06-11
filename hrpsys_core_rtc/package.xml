@@ -12,6 +12,7 @@
 
   <exec_depend>sequence_player</exec_depend>
   <exec_depend>state_holder</exec_depend>
+  <exec_depend>robot_hardware</exec_depend>
 
   <export>
     <metapackage/>

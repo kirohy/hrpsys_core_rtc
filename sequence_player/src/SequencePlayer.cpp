@@ -4,7 +4,7 @@
 #include <rtm/CorbaNaming.h>
 #include <sequence_player/SequencePlayer.h>
 
-static const char *sequenceplayer_spec[] = {"implementation_id", "SequencePlayer", "type_name", "SequencePlayer", "description", "sequence player component",
+static const char *sequenceplayer_spec[] = {"implementation_id", "SequencePlayer2", "type_name", "SequencePlayer2", "description", "sequence player component",
                                             "version", "1.0.0", "vendor", "AIST", "category", "example", "activity_type", "DataFlowComponent", "max_instance",
                                             "10", "language", "C++", "lang_type", "compile",
                                             // Configuration variables

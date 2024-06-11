@@ -9,7 +9,7 @@ void MyModuleInit(RTC::Manager *manager) {
     RTC::RtcBase *comp;
 
     // Create a component
-    comp = manager->createComponent("SequencePlayer");
+    comp = manager->createComponent("SequencePlayer2");
 
 
     // Example

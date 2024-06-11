@@ -19,9 +19,9 @@ template <class Array> inline void setMatrix33ToRowMajorArray(const cnoid::Matri
 };
 
 static const char *stateholder_spec[] = {"implementation_id",
-                                         "StateHolder",
+                                         "StateHolder2",
                                          "type_name",
-                                         "StateHolder",
+                                         "StateHolder2",
                                          "description",
                                          "state holder",
                                          "version",
