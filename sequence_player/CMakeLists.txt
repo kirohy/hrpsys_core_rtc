@@ -14,7 +14,7 @@ rtmbuild2_init(rtmbuild2)
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES SequencePlayer2 SequencePlayer2ServiceSkel SequencePlayer2ServiceStub
+  LIBRARIES SequencePlayer2ServiceSkel SequencePlayer2ServiceStub
   CATKIN_DEPENDS rtmbuild2
   DEPENDS openrtm_aist
 )

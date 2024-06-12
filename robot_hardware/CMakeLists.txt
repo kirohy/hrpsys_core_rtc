@@ -14,7 +14,7 @@ rtmbuild2_init(rtmbuild2)
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES RobotHardware2 RobotHardware2ServiceSkel RobotHardware2ServiceStub
+  LIBRARIES RobotHardware2ServiceSkel RobotHardware2ServiceStub
   CATKIN_DEPENDS rtmbuild2
   DEPENDS openrtm_aist
 )

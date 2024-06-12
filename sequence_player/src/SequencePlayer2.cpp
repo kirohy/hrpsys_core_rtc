@@ -5,7 +5,7 @@
 #include <sequence_player/SequencePlayer2.h>
 
 static const char *sequenceplayer2_spec[] = {"implementation_id", "SequencePlayer2", "type_name", "SequencePlayer2", "description", "sequence player component",
-                                             "version", "1.0.0", "vendor", "AIST", "category", "example", "activity_type", "DataFlowComponent", "max_instance",
+                                             "version", "1.0.0", "vendor", "JSK", "category", "example", "activity_type", "DataFlowComponent", "max_instance",
                                              "10", "language", "C++", "lang_type", "compile",
                                              // Configuration variables
                                              "conf.default.debugLevel", "0", "conf.default.fixedLink", "",

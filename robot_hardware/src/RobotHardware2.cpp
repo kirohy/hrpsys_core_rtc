@@ -4,7 +4,7 @@
 #include <rtm/CorbaNaming.h>
 
 static const char *robothardware2_spec[] = {"implementation_id", "RobotHardware2", "type_name", "RobotHardware2", "description", "RobotHardware2", "version",
-                                            "1.0.0", "vendor", "AIST", "category", "example", "activity_type", "DataFlowComponent", "max_instance", "1",
+                                            "1.0.0", "vendor", "JSK", "category", "example", "activity_type", "DataFlowComponent", "max_instance", "1",
                                             "language", "C++", "lang_type", "compile",
                                             // Configuration variables
                                             "conf.default.isDemoMode", "0", "conf.default.fzLimitRatio", "2.0", "conf.default.servoErrorLimit", ",",
@@ -137,6 +137,7 @@ RTC::ReturnCode_t RobotHardware2::onInitialize() {
         cnoid::ForceSensorPtr s = m_robot->findForceSensor(i);
         RTC_INFO_STREAM("Find ForceSensor: " << s->name());
         m_forceOut[i] = std::make_unique<RTC::OutPort<RTC::TimedDoubleSeq>>(s->name().c_str(), m_force[i]);
+        m_force[i].data.length(6);
         registerOutPort(s->name().c_str(), *m_forceOut[i]);
     }
 

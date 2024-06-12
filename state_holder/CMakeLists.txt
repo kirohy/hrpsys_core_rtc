@@ -15,7 +15,7 @@ rtmbuild2_init(rtmbuild2)
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES StateHolder2 StateHolder2ServiceSkel StateHolder2ServiceStub
+  LIBRARIES StateHolder2ServiceSkel StateHolder2ServiceStub
   CATKIN_DEPENDS rtmbuild2
   DEPENDS openrtm_aist
 )

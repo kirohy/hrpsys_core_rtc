@@ -27,7 +27,7 @@ static const char *stateholder2_spec[] = {"implementation_id",
                                           "version",
                                           "1.0.0",
                                           "vendor",
-                                          "AIST",
+                                          "JSK",
                                           "category",
                                           "example",
                                           "activity_type",
@@ -102,13 +102,6 @@ RTC::ReturnCode_t StateHolder2::onInitialize() {
             return RTC::RTC_ERROR;
         }
     }
-
-    RTC::Manager &rtcManager = RTC::Manager::instance();
-    std::string nameServer   = rtcManager.getConfig()["corba.nameservers"];
-    int comPos               = nameServer.find(",");
-    if (comPos < 0) { comPos = nameServer.length(); }
-    nameServer = nameServer.substr(0, comPos);
-    RTC::CorbaNaming naming(rtcManager.getORB(), nameServer.c_str());
 
     cnoid::BodyLoader body_loader;
     std::string body_filename;
