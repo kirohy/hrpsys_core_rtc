@@ -4,7 +4,6 @@ add_definitions(-Wno-deprecated)
 add_definitions(-DROBOT_IOB_VERSION=4)
 
 find_package(catkin REQUIRED COMPONENTS
-  cpp_filters
   hrpsys_trans_bridge
 )
 find_package(choreonoid REQUIRED)

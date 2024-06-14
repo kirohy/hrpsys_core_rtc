@@ -56,12 +56,11 @@ RTC::ReturnCode_t RobotHardware2::onInitialize() {
 
     RTC::Properties &prop = this->getProperties();
 
-    std::string buf;
-    this->getProperty("dt", buf);
-    double dt = std::stod(buf);
-    if (dt <= 0.0) {
-        this->getProperty("exec_cxt.periodic.rate", buf);
-        double rate = std::stod(buf);
+    double dt = 0.002;
+    if (prop.hasKey("dt")) {
+        dt = std::stod(std::string(prop["dt"]));
+    } else {
+        double rate = std::stod(std::string(this->m_pManager->getConfig()["exec_cxt.periodic.rate"]));
         if (rate > 0.0) {
             dt = 1.0 / rate;
         } else {
@@ -69,21 +68,17 @@ RTC::ReturnCode_t RobotHardware2::onInitialize() {
             return RTC::RTC_ERROR;
         }
     }
+    RTC_INFO_STREAM("dt = " << dt);
+
     m_robot = std::make_shared<robot>(dt);
-
-
-    // RTC::Manager& rtcManager = RTC::Manager::instance();
-    // std::string nameServer = rtcManager.getConfig()["corba.nameservers"];
-    // int comPos = nameServer.find(",");
-    // if (comPos < 0){
-    //     comPos = nameServer.length();
-    // }
-    // nameServer = nameServer.substr(0, comPos);
-    // RTC::CorbaNaming naming(rtcManager.getORB(), nameServer.c_str());
 
     cnoid::BodyLoader body_loader;
     std::string body_filename;
-    this->getProperty("model", body_filename);
+    if (prop.hasKey("model")) {
+        body_filename = std::string(prop["model"]);
+    } else {
+        body_filename = std::string(this->m_pManager->getConfig()["model"]);
+    }
     if (body_filename.find("file://") == 0) { body_filename.erase(0, strlen("file://")); }
     if (!body_loader.load(m_robot.get(), body_filename)) {
         RTC_WARN_STREAM("failed to load model [" << body_filename << "]");
@@ -141,16 +136,12 @@ RTC::ReturnCode_t RobotHardware2::onInitialize() {
         registerOutPort(s->name().c_str(), *m_forceOut[i]);
     }
 
-
-    // <rtc-template block="bind_config">
     // Bind variables and configuration variable
     bindParameter("isDemoMode", m_isDemoMode, "0");
     // bindParameter("servoErrorLimit", m_robot->m_servoErrorLimit, ",");
     bindParameter("fzLimitRatio", m_robot->m_fzLimitRatio, "2");
     bindParameter("jointAccelerationLimit", m_robot->m_accLimit, "0");
     bindParameter("servoOnDelay", m_robot->m_servoOnDelay, "0");
-
-    // </rtc-template>
 
     return RTC::RTC_OK;
 }
@@ -192,7 +183,7 @@ RTC::ReturnCode_t RobotHardware::onDeactivated(RTC::UniqueId ec_id)
 */
 
 RTC::ReturnCode_t RobotHardware2::onExecute(RTC::UniqueId ec_id) {
-    // std::cout << "RobotHardware:onExecute(" << ec_id << ")" << std::endl;
+    // RTC_INFO_STREAM("onExecute(" << ec_id << ")");
     RTC::Time tm;
     this->getTimeNow(tm);
 
@@ -424,21 +415,7 @@ RTC::ReturnCode_t RobotHardware::onRateChanged(RTC::UniqueId ec_id)
 }
 */
 
-bool RobotHardware2::getProperty(const std::string &key, std::string &ret) {
-    if (this->getProperties().hasKey(key.c_str())) {
-        ret = std::string(this->getProperties()[key.c_str()]);
-    } else if (this->m_pManager->getConfig().hasKey(key.c_str())) {
-        ret = std::string(this->m_pManager->getConfig()[key.c_str()]);
-    } else {
-        return false;
-    }
-    RTC_INFO_STREAM(key << ": " << ret);
-    return true;
-}
-
-
 extern "C" {
-
 void RobotHardware2Init(RTC::Manager *manager) {
     RTC::Properties profile(robothardware2_spec);
     manager->registerFactory(profile, RTC::Create<RobotHardware2>, RTC::Delete<RobotHardware2>);

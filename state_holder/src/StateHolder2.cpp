@@ -6,18 +6,6 @@
 #include <state_holder/StateHolder2.h>
 #include <time.h>
 
-template <class Array> inline void setMatrix33ToRowMajorArray(const cnoid::Matrix3 &m33, Array &a, size_t top = 0) {
-    a[top++] = m33(0, 0);
-    a[top++] = m33(0, 1);
-    a[top++] = m33(0, 2);
-    a[top++] = m33(1, 0);
-    a[top++] = m33(1, 1);
-    a[top++] = m33(1, 2);
-    a[top++] = m33(2, 0);
-    a[top++] = m33(2, 1);
-    a[top]   = m33(2, 2);
-};
-
 static const char *stateholder2_spec[] = {"implementation_id",
                                           "StateHolder2",
                                           "type_name",
@@ -89,12 +77,12 @@ RTC::ReturnCode_t StateHolder2::onInitialize() {
     addPort(m_StateHolder2ServicePort);
     addPort(m_TimeKeeper2ServicePort);
 
-    std::string buf;
-    this->getProperty("dt", buf);
-    m_dt = std::stod(buf);
-    if (m_dt <= 0.0) {
-        this->getProperty("exec_cxt.periodic.rate", buf);
-        double rate = std::stod(buf);
+    RTC::Properties &prop = this->getProperties();
+
+    if (prop.hasKey("dt")) {
+        m_dt = std::stod(std::string(prop["dt"]));
+    } else {
+        double rate = std::stod(std::string(this->m_pManager->getConfig()["exec_cxt.periodic.rate"]));
         if (rate > 0.0) {
             m_dt = 1.0 / rate;
         } else {
@@ -102,10 +90,15 @@ RTC::ReturnCode_t StateHolder2::onInitialize() {
             return RTC::RTC_ERROR;
         }
     }
+    RTC_INFO_STREAM("dt = " << m_dt);
 
     cnoid::BodyLoader body_loader;
     std::string body_filename;
-    this->getProperty("model", body_filename);
+    if (prop.hasKey("model")) {
+        body_filename = std::string(prop["model"]);
+    } else {
+        body_filename = std::string(this->m_pManager->getConfig()["model"]);
+    }
     if (body_filename.find("file://") == 0) { body_filename.erase(0, strlen("file://")); }
     cnoid::BodyPtr robot = body_loader.load(body_filename);
     if (!robot) {
@@ -114,7 +107,8 @@ RTC::ReturnCode_t StateHolder2::onInitialize() {
     } else {
         RTC_INFO_STREAM("successed to load model [" << body_filename << "]");
     }
-    cnoid::Link *li    = robot->rootLink();
+
+    cnoid::LinkPtr li  = robot->rootLink();
     cnoid::Vector3 p   = li->translation();
     cnoid::Matrix3 R   = li->rotation().matrix();
     cnoid::Vector3 rpy = cnoid::rpyFromRot(R);
@@ -176,13 +170,12 @@ RTC::ReturnCode_t StateHolder2::onInitialize() {
         registerOutPort(std::string(fsensor_names[i] + "Out").c_str(), *m_wrenchesOut[i]);
     }
 
-    RTC_INFO_STREAM("finish onInitialize");
     return RTC::RTC_OK;
 }
 
 
 RTC::ReturnCode_t StateHolder2::onExecute(RTC::UniqueId ec_id) {
-    // std::cout << "StateHolder::onExecute(" << ec_id << ")" << std::endl;
+    // RTC_INFO_STREAM("onExecute(" << ec_id << ")");
     RTC::Time tm;
 
     if (m_currentQIn.isNew()) {
@@ -234,7 +227,11 @@ RTC::ReturnCode_t StateHolder2::onExecute(RTC::UniqueId ec_id) {
     a[1]             = m_basePos.data.y;
     a[2]             = m_basePos.data.z;
     cnoid::Matrix3 R = cnoid::rotFromRpy(m_baseRpy.data.r, m_baseRpy.data.p, m_baseRpy.data.y);
-    setMatrix33ToRowMajorArray(R, a, 3);
+    for (int i = 0; i < 3; i++) { // set row major
+        for (int j = 0; j < 3; j++) {
+            a[3 + i * 3 + j] = R(i, j);
+        }
+    }
 
     m_basePose.data.position    = m_basePos.data;
     m_basePose.data.orientation = m_baseRpy.data;
@@ -287,7 +284,11 @@ void StateHolder2::getCommand(StateHolder2Service::Command &com) {
     com.baseTransform[2] = m_basePos.data.z;
     cnoid::Matrix3 R     = cnoid::rotFromRpy(m_baseRpy.data.r, m_baseRpy.data.p, m_baseRpy.data.y);
     double *a            = com.baseTransform.get_buffer();
-    setMatrix33ToRowMajorArray(R, a, 3);
+    for (int i = 0; i < 3; i++) { // set row major
+        for (int j = 0; j < 3; j++) {
+            a[3 + i * 3 + j] = R(i, j);
+        }
+    }
     com.zmp.length(3);
     com.zmp[0] = m_zmp.data.x;
     com.zmp[1] = m_zmp.data.y;
@@ -299,20 +300,7 @@ void StateHolder2::wait(CORBA::Double tm) {
     sem_wait(&m_timeSem);
 }
 
-bool StateHolder2::getProperty(const std::string &key, std::string &ret) {
-    if (this->getProperties().hasKey(key.c_str())) {
-        ret = std::string(this->getProperties()[key.c_str()]);
-    } else if (this->m_pManager->getConfig().hasKey(key.c_str())) {
-        ret = std::string(this->m_pManager->getConfig()[key.c_str()]);
-    } else {
-        return false;
-    }
-    RTC_INFO_STREAM(key << ": " << ret);
-    return true;
-}
-
 extern "C" {
-
 void StateHolder2Init(RTC::Manager *manager) {
     RTC::Properties profile(stateholder2_spec);
     manager->registerFactory(profile, RTC::Create<StateHolder2>, RTC::Delete<StateHolder2>);

@@ -1,5 +1,3 @@
-// -*-C++-*-
-
 #ifndef ROBOTHARDWARE2SERVICE_IMPL_H
 #define ROBOTHARDWARE2SERVICE_IMPL_H
 
@@ -42,7 +40,6 @@ class RobotHardware2Service_impl : public virtual POA_OpenHRP::RobotHardware2Ser
     void setDisturbanceObserverGain(::CORBA::Double gain);
     void setJointControlMode(const char *jname, OpenHRP::RobotHardware2Service::JointControlMode jcm);
     //
-    // void setRobot(boost::shared_ptr<robot>& i_robot) { m_robot = i_robot; }
     void setRobot(std::shared_ptr<robot> &i_robot) { m_robot = i_robot; }
 
   private:

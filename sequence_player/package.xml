@@ -13,5 +13,4 @@
   <depend>roscpp</depend>
   <depend>rtmbuild2</depend>
   <depend>choreonoid</depend>
-  <depend>cpp_filters</depend>
 </package>

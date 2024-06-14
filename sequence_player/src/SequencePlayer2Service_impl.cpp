@@ -186,15 +186,12 @@ CORBA::Boolean SequencePlayer2Service_impl::setJointAnglesSequenceFull(const dSe
 }
 
 CORBA::Boolean SequencePlayer2Service_impl::setJointAngle(const char *jname, CORBA::Double jv, CORBA::Double tm) {
-    // BodyPtr r = m_player->robot();
     cnoid::BodyPtr r = m_player->robot();
-    // Link *l = r->link(jname);
-    cnoid::Link *l = r->link(jname);
+    cnoid::LinkPtr l = r->link(jname);
     if (!l) {
         std::cerr << "can't find(" << jname << ")" << std::endl;
         return false;
     }
-    // int id = l->jointId;
     int id = l->jointId();
     return m_player->setJointAngle(id, jv, tm);
 }

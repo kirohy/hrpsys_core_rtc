@@ -352,7 +352,6 @@ void seqplay::get(double *o_q, double *o_zmp, double *o_accel, double *o_basePos
                 continue;
             }
         }
-        ++it;
     }
     interpolators[ZMP]->get(o_zmp);
     interpolators[ACC]->get(o_accel);

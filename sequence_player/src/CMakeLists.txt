@@ -2,9 +2,6 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE Release)
 add_definitions(-Wno-deprecated)
 
-find_package(catkin REQUIRED COMPONENTS
-  cpp_filters
-)
 find_package(choreonoid REQUIRED)
 
 find_package(PkgConfig)

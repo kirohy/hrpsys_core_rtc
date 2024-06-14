@@ -345,7 +345,7 @@ void robot::oneStep() {
 }
 
 bool robot::servo(const char *jname, bool turnon) {
-    cnoid::Link *l = nullptr;
+    cnoid::LinkPtr l = nullptr;
     if (strcmp(jname, "all") == 0 || strcmp(jname, "ALL") == 0) {
         bool ret = true;
         for (unsigned int i = 0; i < numJoints(); i++) {
@@ -411,7 +411,7 @@ bool robot::power(const char *jname, bool turnon) {
     if (strcmp(jname, "all") == 0 || strcmp(jname, "ALL") == 0) {
         jid = JID_ALL;
     } else {
-        cnoid::Link *l = link(jname);
+        cnoid::LinkPtr l = link(jname);
         if (!l) return false;
         if (l->jointId() < 0) return false;
         jid = l->jointId();
@@ -672,7 +672,7 @@ bool robot::setServoGainPercentage(const char *i_jname, double i_percentage, int
     int max_count = GAIN_COUNT;
     if (!(transition_time < m_dt)) max_count = transition_time / m_dt;
     // if ( !(transition_time < m_dt) ) max_count = transition_time/m_dt/1000.0;
-    cnoid::Link *l = nullptr;
+    cnoid::LinkPtr l = nullptr;
     if (strcmp(i_jname, "all") == 0 || strcmp(i_jname, "ALL") == 0) {
         for (unsigned int i = 0; i < numJoints(); i++) {
             if (!read_pgain(i, &old_pgain[i])) old_pgain[i] = pgain[i];
@@ -730,7 +730,7 @@ bool robot::setServoTorqueGainPercentage(const char *i_jname, double i_percentag
                   << std::endl;
         return false;
     }
-    cnoid::Link *l = nullptr;
+    cnoid::LinkPtr l = nullptr;
     if (strcmp(i_jname, "all") == 0 || strcmp(i_jname, "ALL") == 0) {
         for (int i = 0; i < numJoints(); i++) {
 #if defined(ROBOT_IOB_VERSION) && ROBOT_IOB_VERSION >= 4
@@ -780,7 +780,7 @@ bool robot::setServoTorqueGainPercentage(const char *i_jname, double i_percentag
 }
 
 bool robot::setServoErrorLimit(const char *i_jname, double i_limit) {
-    cnoid::Link *l = nullptr;
+    cnoid::LinkPtr l = nullptr;
     if (strcmp(i_jname, "all") == 0 || strcmp(i_jname, "ALL") == 0) {
         for (unsigned int i = 0; i < numJoints(); i++) {
             m_servoErrorLimit[i] = i_limit;
@@ -825,7 +825,7 @@ void robot::setProperty(const char *i_key, const char *i_value) {
 bool robot::names2ids(const std::vector<std::string> &i_names, std::vector<int> &o_ids) {
     bool ret = true;
     for (unsigned int i = 0; i < i_names.size(); i++) {
-        cnoid::Link *l = link(i_names[i]);
+        cnoid::LinkPtr l = link(i_names[i]);
         if (!l) {
             std::cout << "joint named [" << i_names[i] << "] not found" << std::endl;
             ret = false;
@@ -912,7 +912,7 @@ int robot::numThermometers() {
 
 bool robot::setJointInertia(const char *jname, double mn) {
 #if defined(ROBOT_IOB_VERSION) && ROBOT_IOB_VERSION >= 3
-    cnoid::Link *l = link(jname);
+    cnoid::LinkPtr l = link(jname);
     if (!l) return false;
     int jid = l->jointId();
     if (jid < 0) return false;
@@ -955,7 +955,7 @@ void robot::setDisturbanceObserverGain(double gain) {
 }
 
 bool robot::setJointControlMode(const char *i_jname, joint_control_mode mode) {
-    cnoid::Link *l = nullptr;
+    cnoid::LinkPtr l = nullptr;
     if (strcmp(i_jname, "all") == 0 || strcmp(i_jname, "ALL") == 0) {
         for (int i = 0; i < numJoints(); i++) {
             write_control_mode(i, mode);

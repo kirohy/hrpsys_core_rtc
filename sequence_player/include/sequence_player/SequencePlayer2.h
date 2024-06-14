@@ -69,8 +69,6 @@ class SequencePlayer2 : public RTC::DataFlowComponentBase {
     void setMaxIKError(double pos, double rot);
     void setMaxIKIteration(short iter);
 
-    bool getProperty(const std::string &, std::string &);
-
   protected:
     RTC::TimedDoubleSeq m_qInit;
     RTC::InPort<RTC::TimedDoubleSeq> m_qInitIn;

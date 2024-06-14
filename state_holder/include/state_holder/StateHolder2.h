@@ -31,7 +31,6 @@ class StateHolder2 : public RTC::DataFlowComponentBase {
 
     void goActual();
     void getCommand(OpenHRP::StateHolder2Service::Command &com);
-    bool getProperty(const std::string &, std::string &);
     void wait(CORBA::Double tm);
 
   protected:

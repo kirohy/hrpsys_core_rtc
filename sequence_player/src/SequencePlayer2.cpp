@@ -56,12 +56,12 @@ RTC::ReturnCode_t SequencePlayer2::onInitialize() {
     bindParameter("debugLevel", m_debugLevel, "0");
     bindParameter("fixedLink", m_fixedLink, "");
 
-    std::string buf;
-    this->getProperty("dt", buf);
-    m_dt = std::stod(buf);
-    if (m_dt <= 0.0) {
-        this->getProperty("exec_cxt.periodic.rate", buf);
-        double rate = std::stod(buf);
+    RTC::Properties &prop = this->getProperties();
+
+    if (prop.hasKey("dt")) {
+        m_dt = std::stod(std::string(prop["dt"]));
+    } else {
+        double rate = std::stod(std::string(this->m_pManager->getConfig()["exec_cxt.periodic.rate"]));
         if (rate > 0.0) {
             m_dt = 1.0 / rate;
         } else {
@@ -69,10 +69,15 @@ RTC::ReturnCode_t SequencePlayer2::onInitialize() {
             return RTC::RTC_ERROR;
         }
     }
+    RTC_INFO_STREAM("dt = " << m_dt);
 
     cnoid::BodyLoader body_loader;
     std::string body_filename;
-    this->getProperty("model", body_filename);
+    if (prop.hasKey("model")) {
+        body_filename = std::string(prop["model"]);
+    } else {
+        body_filename = std::string(this->m_pManager->getConfig()["model"]);
+    }
     if (body_filename.find("file://") == 0) { body_filename.erase(0, strlen("file://")); }
     m_robot = body_loader.load(body_filename);
     if (!m_robot) {
@@ -113,18 +118,19 @@ RTC::ReturnCode_t SequencePlayer2::onInitialize() {
     }
 
     std::string optional_data_dim_str;
-    if (this->getProperty("seq_optional_data_dim", optional_data_dim_str)) {
-        m_optional_data_dim = std::stoi(optional_data_dim_str);
+    if (prop.hasKey("seq_optional_data_dim")) {
+        m_optional_data_dim = std::stoi(std::string(prop["seq_optional_data_dim"]));
     } else {
         m_optional_data_dim = 1;
     }
+    RTC_INFO_STREAM("seq_optional_data_dim = " << m_optional_data_dim);
 
     m_seq = std::make_shared<seqplay>(dof, m_dt, nforce, m_optional_data_dim);
 
     m_qInit.data.length(dof);
     for (unsigned int i = 0; i < dof; i++)
         m_qInit.data[i] = 0.0;
-    cnoid::Link *root    = m_robot->rootLink();
+    cnoid::LinkPtr root  = m_robot->rootLink();
     m_basePosInit.data.x = root->p()[0];
     m_basePosInit.data.y = root->p()[1];
     m_basePosInit.data.z = root->p()[2];
@@ -141,7 +147,6 @@ RTC::ReturnCode_t SequencePlayer2::onInitialize() {
     m_tqRef.data.length(dof);
     m_optionalData.data.length(m_optional_data_dim);
 
-    RTC_INFO_STREAM("finish onInitialize");
     return RTC::RTC_OK;
 }
 
@@ -157,6 +162,7 @@ RTC::ReturnCode_t SequencePlayer2::onActivated(RTC::UniqueId ec_id) {
 }
 
 RTC::ReturnCode_t SequencePlayer2::onExecute(RTC::UniqueId ec_id) {
+    // RTC_INFO_STREAM("onExecute(" << ec_id << ")");
     static int loop = 0;
     loop++;
     if (m_debugLevel > 0 && loop % 1000 == 0) { RTC_WARN_STREAM(__PRETTY_FUNCTION__ << "(" << ec_id << ")"); }
@@ -199,12 +205,12 @@ RTC::ReturnCode_t SequencePlayer2::onExecute(RTC::UniqueId ec_id) {
             }
             m_robot->rootLink()->setRotation(cnoid::rotFromRpy(rpy[0], rpy[1], rpy[2]));
             m_robot->calcForwardKinematics();
-            cnoid::Link *root = m_robot->rootLink();
+            cnoid::LinkPtr root = m_robot->rootLink();
             cnoid::Vector3 rootP;
             cnoid::Matrix3 rootR;
             if (m_timeToStartPlaying > 0) {
                 m_timeToStartPlaying -= m_dt;
-                cnoid::Link *fixed         = m_robot->link(m_fixedLink);
+                cnoid::LinkPtr fixed       = m_robot->link(m_fixedLink);
                 cnoid::Matrix3 fixed2rootR = fixed->R().transpose() * root->R();
                 cnoid::Vector3 fixed2rootP = fixed->R().transpose() * (root->p() - fixed->p());
                 rootR                      = m_fixedR * fixed2rootR;
@@ -285,13 +291,13 @@ bool SequencePlayer2::setJointAngle(short id, double angle, double tm) {
     m_seq->getJointAngles(q.data());
     q[id] = angle;
     for (unsigned int i = 0; i < m_robot->numJoints(); i++) {
-        cnoid::Link *j = m_robot->joint(i);
+        cnoid::LinkPtr j = m_robot->joint(i);
         if (j) j->q() = q[i];
     }
     m_robot->calcForwardKinematics();
     cnoid::Vector3 absZmp = m_robot->calcCenterOfMass();
     absZmp[2]             = 0;
-    cnoid::Link *root     = m_robot->rootLink();
+    cnoid::LinkPtr root   = m_robot->rootLink();
     cnoid::Vector3 relZmp = root->R().transpose() * (absZmp - root->p());
     m_seq->setJointAngles(q.data(), tm);
     m_seq->setZmp(relZmp.data(), tm);
@@ -303,13 +309,13 @@ bool SequencePlayer2::setJointAngles(const double *angles, double tm) {
     std::lock_guard<std::mutex> guard(m_mutex);
     if (!setInitialState()) return false;
     for (unsigned int i = 0; i < m_robot->numJoints(); i++) {
-        cnoid::Link *j = m_robot->joint(i);
+        cnoid::LinkPtr j = m_robot->joint(i);
         if (j) j->q() = angles[i];
     }
     m_robot->calcForwardKinematics();
     cnoid::Vector3 absZmp = m_robot->calcCenterOfMass();
     absZmp[2]             = 0;
-    cnoid::Link *root     = m_robot->rootLink();
+    cnoid::LinkPtr root   = m_robot->rootLink();
     cnoid::Vector3 relZmp = root->R().transpose() * (absZmp - root->p());
     std::vector<const double *> v_poss;
     std::vector<double> v_tms;
@@ -490,7 +496,7 @@ bool SequencePlayer2::setTargetPose(const char *gname, const double *xyz, const 
 
     // calc fk
     for (unsigned int i = 0; i < m_robot->numJoints(); i++) {
-        cnoid::Link *j = m_robot->joint(i);
+        cnoid::LinkPtr j = m_robot->joint(i);
         if (j) j->q() = m_qRef.data.get_buffer()[i];
     }
     m_robot->calcForwardKinematics();
@@ -584,7 +590,7 @@ void SequencePlayer2::loadPattern(const char *basename, double tm) {
     std::lock_guard<std::mutex> guard(m_mutex);
     if (setInitialState()) {
         if (m_fixedLink != "") {
-            cnoid::Link *l = m_robot->link(m_fixedLink);
+            cnoid::LinkPtr l = m_robot->link(m_fixedLink);
             if (!l) {
                 RTC_WARN_STREAM(__PRETTY_FUNCTION__ << "can't find a fixed link(" << m_fixedLink << ")");
                 m_fixedLink = "";
@@ -637,12 +643,12 @@ bool SequencePlayer2::setInitialState(double tm) {
     } else {
         m_seq->setJointAngles(m_qInit.data.get_buffer(), tm);
         for (unsigned int i = 0; i < m_robot->numJoints(); i++) {
-            cnoid::Link *l = m_robot->joint(i);
-            l->q()         = m_qInit.data[i];
-            m_qRef.data[i] = m_qInit.data[i]; // update m_qRef for setTargetPose()
+            cnoid::LinkPtr l = m_robot->joint(i);
+            l->q()           = m_qInit.data[i];
+            m_qRef.data[i]   = m_qInit.data[i]; // update m_qRef for setTargetPose()
         }
 
-        cnoid::Link *root = m_robot->rootLink();
+        cnoid::LinkPtr root = m_robot->rootLink();
 
         root->setTranslation(cnoid::Vector3(m_basePosInit.data.x, m_basePosInit.data.y, m_basePosInit.data.z));
         m_seq->setBasePos(root->p().data(), tm);
@@ -699,7 +705,7 @@ bool SequencePlayer2::addJointGroup(const char *gname, const OpenHRP::SequencePl
     std::lock_guard<std::mutex> guard(m_mutex);
     std::vector<int> indices;
     for (size_t i = 0; i < jnames.length(); i++) {
-        cnoid::Link *l = m_robot->link(std::string(jnames[i]));
+        cnoid::LinkPtr l = m_robot->link(std::string(jnames[i]));
         if (l) {
             indices.push_back(l->jointId());
         } else {
@@ -752,20 +758,7 @@ void SequencePlayer2::setMaxIKError(double pos, double rot) {
 
 void SequencePlayer2::setMaxIKIteration(short iter) { m_iteration = iter; }
 
-bool SequencePlayer2::getProperty(const std::string &key, std::string &ret) {
-    if (this->getProperties().hasKey(key.c_str())) {
-        ret = std::string(this->getProperties()[key.c_str()]);
-    } else if (this->m_pManager->getConfig().hasKey(key.c_str())) {
-        ret = std::string(this->m_pManager->getConfig()[key.c_str()]);
-    } else {
-        return false;
-    }
-    RTC_INFO_STREAM(key << ": " << ret);
-    return true;
-}
-
 extern "C" {
-
 void SequencePlayer2Init(RTC::Manager *manager) {
     RTC::Properties profile(sequenceplayer2_spec);
     manager->registerFactory(profile, RTC::Create<SequencePlayer2>, RTC::Delete<SequencePlayer2>);
