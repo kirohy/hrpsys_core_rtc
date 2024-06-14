@@ -10,10 +10,11 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <exec_depend>kalman_filter</exec_depend>
+  <exec_depend>remove_force_sensor_link_offset</exec_depend>
+  <exec_depend>robot_hardware</exec_depend>
   <exec_depend>sequence_player</exec_depend>
   <exec_depend>state_holder</exec_depend>
-  <exec_depend>robot_hardware</exec_depend>
-  <exec_depend>remove_force_sensor_link_offset</exec_depend>
 
   <export>
     <metapackage/>
