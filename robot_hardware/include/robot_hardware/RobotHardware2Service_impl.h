@@ -1,11 +1,11 @@
 #ifndef ROBOTHARDWARE2SERVICE_IMPL_H
 #define ROBOTHARDWARE2SERVICE_IMPL_H
 
-#include <boost/intrusive_ptr.hpp>
 #include <robot_hardware/idl/RobotHardware2Service.hh>
 #include <robot_hardware/robot.h>
 
-class RobotHardware2Service_impl : public virtual POA_OpenHRP::RobotHardware2Service, public virtual PortableServer::RefCountServantBase {
+class RobotHardware2Service_impl : public virtual POA_OpenHRP::RobotHardware2Service,
+                                   public virtual PortableServer::RefCountServantBase {
   public:
     RobotHardware2Service_impl();
     virtual ~RobotHardware2Service_impl();

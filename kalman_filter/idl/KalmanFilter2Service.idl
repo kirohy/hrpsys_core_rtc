@@ -1,7 +1,3 @@
-/**
- * @file KalmanFilterService.idl
- * @brief Services for the kalman filter interface
- */
 module OpenHRP
 {
   interface KalmanFilter2Service

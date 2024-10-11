@@ -17,7 +17,8 @@
 #include "TimeKeeper2Service_impl.h"
 
 #define RTC_INFO_STREAM(var) std::cout << "[" << m_profile.instance_name << "] " << var << std::endl;
-#define RTC_WARN_STREAM(var) std::cerr << "\x1b[31m[" << m_profile.instance_name << "] " << var << "\x1b[39m" << std::endl;
+#define RTC_WARN_STREAM(var)                                                                                           \
+    std::cerr << "\x1b[31m[" << m_profile.instance_name << "] " << var << "\x1b[39m" << std::endl;
 
 class StateHolder2 : public RTC::DataFlowComponentBase {
   public:

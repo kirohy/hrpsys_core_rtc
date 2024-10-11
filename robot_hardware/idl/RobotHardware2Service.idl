@@ -1,8 +1,3 @@
-/**
- * @file RobotHardwareService.idl
- * @brief Services for the robot hardware interface
- */
-
 #include "BasicDataType.idl"
 
 module OpenHRP

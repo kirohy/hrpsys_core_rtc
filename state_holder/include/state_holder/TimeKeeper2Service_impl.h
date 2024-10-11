@@ -7,7 +7,8 @@ using namespace OpenHRP;
 
 class StateHolder2;
 
-class TimeKeeper2Service_impl : public virtual POA_OpenHRP::TimeKeeper2Service, public virtual PortableServer::RefCountServantBase {
+class TimeKeeper2Service_impl : public virtual POA_OpenHRP::TimeKeeper2Service,
+                                public virtual PortableServer::RefCountServantBase {
   public:
     TimeKeeper2Service_impl();
     virtual ~TimeKeeper2Service_impl();

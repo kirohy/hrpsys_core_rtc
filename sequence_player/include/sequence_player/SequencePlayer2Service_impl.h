@@ -7,7 +7,8 @@ using namespace OpenHRP;
 
 class SequencePlayer2;
 
-class SequencePlayer2Service_impl : public virtual POA_OpenHRP::SequencePlayer2Service, public virtual PortableServer::RefCountServantBase {
+class SequencePlayer2Service_impl : public virtual POA_OpenHRP::SequencePlayer2Service,
+                                    public virtual PortableServer::RefCountServantBase {
   public:
     SequencePlayer2Service_impl();
     virtual ~SequencePlayer2Service_impl();
@@ -15,11 +16,13 @@ class SequencePlayer2Service_impl : public virtual POA_OpenHRP::SequencePlayer2S
     void waitInterpolation();
     CORBA::Boolean waitInterpolationOfGroup(const char *gname);
     CORBA::Boolean setJointAnglesSequence(const dSequenceSequence &jvs, const dSequence &tms);
-    CORBA::Boolean setJointAnglesSequenceWithMask(const dSequenceSequence &jvs, const bSequence &mask, const dSequence &tms);
-    CORBA::Boolean setJointAnglesSequenceFull(const dSequenceSequence &jvss, const dSequenceSequence &vels, const dSequenceSequence &torques,
-                                              const dSequenceSequence &poss, const dSequenceSequence &rpys, const dSequenceSequence &accs,
-                                              const dSequenceSequence &zmps, const dSequenceSequence &wrenches, const dSequenceSequence &optionals,
-                                              const dSequence &tms);
+    CORBA::Boolean setJointAnglesSequenceWithMask(const dSequenceSequence &jvs, const bSequence &mask,
+                                                  const dSequence &tms);
+    CORBA::Boolean setJointAnglesSequenceFull(const dSequenceSequence &jvss, const dSequenceSequence &vels,
+                                              const dSequenceSequence &torques, const dSequenceSequence &poss,
+                                              const dSequenceSequence &rpys, const dSequenceSequence &accs,
+                                              const dSequenceSequence &zmps, const dSequenceSequence &wrenches,
+                                              const dSequenceSequence &optionals, const dSequence &tms);
     CORBA::Boolean clearJointAngles();
     CORBA::Boolean setJointAngles(const dSequence &jvs, CORBA::Double tm);
     CORBA::Boolean setJointAnglesWithMask(const dSequence &jvs, const bSequence &mask, CORBA::Double tm);
@@ -31,7 +34,8 @@ class SequencePlayer2Service_impl : public virtual POA_OpenHRP::SequencePlayer2S
     CORBA::Boolean setTargetPose(const char *gname, const dSequence &xyz, const dSequence &rpy, CORBA::Double tm);
     CORBA::Boolean isEmpty();
     void loadPattern(const char *basename, CORBA::Double tm);
-    void playPattern(const dSequenceSequence &pos, const dSequenceSequence &rpy, const dSequenceSequence &zmp, const dSequence &tm);
+    void playPattern(const dSequenceSequence &pos, const dSequenceSequence &rpy, const dSequenceSequence &zmp,
+                     const dSequence &tm);
     void clear();
     void clearNoWait();
     CORBA::Boolean setInterpolationMode(OpenHRP::SequencePlayer2Service::interpolationMode i_mode_);

@@ -14,12 +14,12 @@
 #include <rtm/idl/BasicDataTypeSkel.h>
 #include <rtm/idl/ExtendedDataTypes.hh>
 #include <rtm/idl/ExtendedDataTypesSkel.h>
-#include <time.h>
 
 #include "RobotHardware2Service_impl.h"
 
 #define RTC_INFO_STREAM(var) std::cout << "[" << m_profile.instance_name << "] " << var << std::endl;
-#define RTC_WARN_STREAM(var) std::cerr << "\x1b[31m[" << m_profile.instance_name << "] " << var << "\x1b[39m" << std::endl;
+#define RTC_WARN_STREAM(var)                                                                                           \
+    std::cerr << "\x1b[31m[" << m_profile.instance_name << "] " << var << "\x1b[39m" << std::endl;
 
 class robot;
 

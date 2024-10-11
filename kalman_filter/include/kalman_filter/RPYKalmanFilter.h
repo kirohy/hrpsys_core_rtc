@@ -74,8 +74,9 @@ class KFilter {
 class RPYKalmanFilter {
   public:
     RPYKalmanFilter() : m_sensorR(cnoid::Matrix3::Identity()){};
-    void main_one(cnoid::Vector3 &rpy, cnoid::Vector3 &rpyRaw, cnoid::Vector3 &baseRpyCurrent, const cnoid::Vector3 &acc, const cnoid::Vector3 &gyro,
-                  const double &sl_y, const cnoid::Matrix3 &BtoS) {
+    void main_one(cnoid::Vector3 &rpy, cnoid::Vector3 &rpyRaw, cnoid::Vector3 &baseRpyCurrent,
+                  const cnoid::Vector3 &acc, const cnoid::Vector3 &gyro, const double &sl_y,
+                  const cnoid::Matrix3 &BtoS) {
         //
         // G = [ cosb, sinb sina, sinb cosa,
         //          0,      cosa,     -sina,
@@ -106,8 +107,8 @@ class RPYKalmanFilter {
         double pitch = p_filter.getx()[0];
         double yaw   = y_filter.getx()[0];
         cnoid::Matrix3 tmpMat;
-        tmpMat << 1.0, sin(roll) * sin(pitch) / cos(pitch), cos(roll) * sin(pitch) / cos(pitch), 0, cos(roll), -sin(roll), 0, sin(roll) / cos(pitch),
-            cos(roll) / cos(pitch);
+        tmpMat << 1.0, sin(roll) * sin(pitch) / cos(pitch), cos(roll) * sin(pitch) / cos(pitch), 0, cos(roll),
+            -sin(roll), 0, sin(roll) / cos(pitch), cos(roll) / cos(pitch);
         gyro2 = tmpMat * gyro;
 #endif
         r_filter.update(gyro2(0), rpyRaw(0));
@@ -115,19 +116,23 @@ class RPYKalmanFilter {
         y_filter.update(gyro2(2), rpyRaw(2));
 
         cnoid::Matrix3 imaginaryRotationMatrix =
-            cnoid::rotFromRpy(r_filter.getx()[0], p_filter.getx()[0], y_filter.getx()[0]); // the imaginary frame relative to a world reference frame
-        cnoid::Matrix3 realRotationMatrix = imaginaryRotationMatrix * m_sensorR;           // the imu frame relative to a world reference frame
-        cnoid::Vector3 euler              = cnoid::rpyFromRot(realRotationMatrix);
-        rpy(0)                            = euler(0);
-        rpy(1)                            = euler(1);
-        rpy(2)                            = euler(2);
-        cnoid::Matrix3 WtoB               = realRotationMatrix * BtoS.transpose(); // the body frame relative to a world reference frame
-        cnoid::Vector3 euler2             = cnoid::rpyFromRot(WtoB);
-        baseRpyCurrent(0)                 = euler2(0);
-        baseRpyCurrent(1)                 = euler2(1);
-        baseRpyCurrent(2)                 = euler2(2);
+            cnoid::rotFromRpy(r_filter.getx()[0], p_filter.getx()[0],
+                              y_filter.getx()[0]); // the imaginary frame relative to a world reference frame
+        cnoid::Matrix3 realRotationMatrix =
+            imaginaryRotationMatrix * m_sensorR; // the imu frame relative to a world reference frame
+        cnoid::Vector3 euler = cnoid::rpyFromRot(realRotationMatrix);
+        rpy(0)               = euler(0);
+        rpy(1)               = euler(1);
+        rpy(2)               = euler(2);
+        cnoid::Matrix3 WtoB =
+            realRotationMatrix * BtoS.transpose(); // the body frame relative to a world reference frame
+        cnoid::Vector3 euler2 = cnoid::rpyFromRot(WtoB);
+        baseRpyCurrent(0)     = euler2(0);
+        baseRpyCurrent(1)     = euler2(1);
+        baseRpyCurrent(2)     = euler2(2);
     };
-    void setParam(const double _dt, const double _Q_angle, const double _Q_rate, const double _R_angle, const std::string print_str = "") {
+    void setParam(const double _dt, const double _Q_angle, const double _Q_rate, const double _R_angle,
+                  const std::string print_str = "") {
         Q_angle = _Q_angle;
         Q_rate  = _Q_rate;
         R_angle = _R_angle;
@@ -148,7 +153,8 @@ class RPYKalmanFilter {
         y_filter.setQ(Q_angle * _dt, 0, 0, Q_rate * _dt);
         y_filter.setR(R_angle);
         y_filter.setB(_dt, 0);
-        std::cerr << "[" << print_str << "]   Q_angle=" << Q_angle << ", Q_rate=" << Q_rate << ", R_angle=" << R_angle << std::endl;
+        std::cerr << "[" << print_str << "]   Q_angle=" << Q_angle << ", Q_rate=" << Q_rate << ", R_angle=" << R_angle
+                  << std::endl;
     };
     void resetKalmanFilterState() {
         r_filter.resetStateByObservation();

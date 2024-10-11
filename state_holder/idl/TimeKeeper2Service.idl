@@ -1,7 +1,3 @@
-/**
- * @file TimeKeeperService.idl
- * @brief Services for the time keeper interface
- */
 module OpenHRP
 {
   interface TimeKeeper2Service

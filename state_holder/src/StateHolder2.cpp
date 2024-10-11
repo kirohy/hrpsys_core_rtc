@@ -29,11 +29,13 @@ static const char *stateholder2_spec[] = {"implementation_id",
                                           ""};
 
 StateHolder2::StateHolder2(RTC::Manager *manager)
-    : RTC::DataFlowComponentBase(manager), m_currentQIn("currentQIn", m_currentQ), m_qIn("qIn", m_q), m_tqIn("tqIn", m_tq), m_basePosIn("basePosIn", m_basePos),
-      m_baseRpyIn("baseRpyIn", m_baseRpy), m_zmpIn("zmpIn", m_zmp), m_optionalDataIn("optionalDataIn", m_optionalData), m_qOut("qOut", m_q),
-      m_tqOut("tqOut", m_tq), m_basePosOut("basePosOut", m_basePos), m_baseRpyOut("baseRpyOut", m_baseRpy), m_baseTformOut("baseTformOut", m_baseTform),
-      m_basePoseOut("basePoseOut", m_basePose), m_zmpOut("zmpOut", m_zmp), m_optionalDataOut("optionalDataOut", m_optionalData),
-      m_StateHolder2ServicePort("StateHolder2Service"), m_TimeKeeper2ServicePort("TimeKeeper2Service"), m_timeCount(0), dummy(0) {
+    : RTC::DataFlowComponentBase(manager), m_currentQIn("currentQIn", m_currentQ), m_qIn("qIn", m_q),
+      m_tqIn("tqIn", m_tq), m_basePosIn("basePosIn", m_basePos), m_baseRpyIn("baseRpyIn", m_baseRpy),
+      m_zmpIn("zmpIn", m_zmp), m_optionalDataIn("optionalDataIn", m_optionalData), m_qOut("qOut", m_q),
+      m_tqOut("tqOut", m_tq), m_basePosOut("basePosOut", m_basePos), m_baseRpyOut("baseRpyOut", m_baseRpy),
+      m_baseTformOut("baseTformOut", m_baseTform), m_basePoseOut("basePoseOut", m_basePose), m_zmpOut("zmpOut", m_zmp),
+      m_optionalDataOut("optionalDataOut", m_optionalData), m_StateHolder2ServicePort("StateHolder2Service"),
+      m_TimeKeeper2ServicePort("TimeKeeper2Service"), m_timeCount(0), dummy(0) {
 
     m_service0.setComponent(this);
     m_service1.setComponent(this);
@@ -161,8 +163,10 @@ RTC::ReturnCode_t StateHolder2::onInitialize() {
     m_wrenchesIn.resize(nforce);
     m_wrenchesOut.resize(nforce);
     for (unsigned int i = 0; i < nforce; i++) {
-        m_wrenchesIn[i]  = std::make_unique<RTC::InPort<RTC::TimedDoubleSeq>>(std::string(fsensor_names[i] + "In").c_str(), m_wrenches[i]);
-        m_wrenchesOut[i] = std::make_unique<RTC::OutPort<RTC::TimedDoubleSeq>>(std::string(fsensor_names[i] + "Out").c_str(), m_wrenches[i]);
+        m_wrenchesIn[i] = std::make_unique<RTC::InPort<RTC::TimedDoubleSeq>>(
+            std::string(fsensor_names[i] + "In").c_str(), m_wrenches[i]);
+        m_wrenchesOut[i] = std::make_unique<RTC::OutPort<RTC::TimedDoubleSeq>>(
+            std::string(fsensor_names[i] + "Out").c_str(), m_wrenches[i]);
         m_wrenches[i].data.length(6);
         m_wrenches[i].data[0] = m_wrenches[i].data[1] = m_wrenches[i].data[2] = 0.0;
         m_wrenches[i].data[3] = m_wrenches[i].data[4] = m_wrenches[i].data[5] = 0.0;

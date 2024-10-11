@@ -1,20 +1,21 @@
-#include <remove_force_sensor_link_offset/RemoveForceSensorLinkOffset2.h>
-#include <rtm/CorbaNaming.h>
 #include <cnoid/AccelerationSensor>
 #include <cnoid/BodyLoader>
 #include <cnoid/DeviceList>
 #include <cnoid/ForceSensor>
+#include <remove_force_sensor_link_offset/RemoveForceSensorLinkOffset2.h>
+#include <rtm/CorbaNaming.h>
 
-static const char *removeforcesensorlinkoffset2_spec[] = {"implementation_id", "RemoveForceSensorLinkOffset2", "type_name", "RemoveForceSensorLinkOffset2",
-                                                          "description", "null component", "version", "0.0.0", "vendor", "JSK", "category", "example",
-                                                          "activity_type", "DataFlowComponent", "max_instance", "10", "language", "C++", "lang_type", "compile",
-                                                          // Configuration variables
-                                                          "conf.default.debugLevel", "0", ""};
+static const char *removeforcesensorlinkoffset2_spec[] = {
+    "implementation_id", "RemoveForceSensorLinkOffset2", "type_name", "RemoveForceSensorLinkOffset2", "description",
+    "null component", "version", "0.0.0", "vendor", "JSK", "category", "example", "activity_type", "DataFlowComponent",
+    "max_instance", "10", "language", "C++", "lang_type", "compile",
+    // Configuration variables
+    "conf.default.debugLevel", "0", ""};
 
 RemoveForceSensorLinkOffset2::RemoveForceSensorLinkOffset2(RTC::Manager *manager)
-    : RTC::DataFlowComponentBase(manager),
-      m_qCurrentIn("qCurrent", m_qCurrent), m_rpyIn("rpy", m_rpy), m_RemoveForceSensorLinkOffsetServicePort("RemoveForceSensorLinkOffset2Service"),
-      m_debugLevel(0), max_sensor_offset_calib_counter(0) {
+    : RTC::DataFlowComponentBase(manager), m_qCurrentIn("qCurrent", m_qCurrent), m_rpyIn("rpy", m_rpy),
+      m_RemoveForceSensorLinkOffsetServicePort("RemoveForceSensorLinkOffset2Service"), m_debugLevel(0),
+      max_sensor_offset_calib_counter(0) {
     m_service0.rmfsoff(this);
 }
 
@@ -35,7 +36,8 @@ RTC::ReturnCode_t RemoveForceSensorLinkOffset2::onInitialize() {
     // Set OutPort buffer
 
     // Set service provider to Ports
-    m_RemoveForceSensorLinkOffsetServicePort.registerProvider("service0", "RemoveForceSensorLinkOffset2Service", m_service0);
+    m_RemoveForceSensorLinkOffsetServicePort.registerProvider("service0", "RemoveForceSensorLinkOffset2Service",
+                                                              m_service0);
 
     // Set service consumers to Ports
 
@@ -81,37 +83,18 @@ RTC::ReturnCode_t RemoveForceSensorLinkOffset2::onInitialize() {
     m_forceIn.resize(nforce);
     for (unsigned int i = 0; i < nforce; i++) {
         cnoid::ForceSensorPtr s = force_sensors[i];
-        m_forceOut[i]           = std::make_unique<RTC::OutPort<RTC::TimedDoubleSeq>>(std::string("off_" + s->name()).c_str(), m_force[i]);
-        m_forceIn[i]            = std::make_unique<RTC::InPort<RTC::TimedDoubleSeq>>(s->name().c_str(), m_force[i]);
+        m_forceOut[i] =
+            std::make_unique<RTC::OutPort<RTC::TimedDoubleSeq>>(std::string("off_" + s->name()).c_str(), m_force[i]);
+        m_forceIn[i] = std::make_unique<RTC::InPort<RTC::TimedDoubleSeq>>(s->name().c_str(), m_force[i]);
         m_force[i].data.length(6);
         registerInPort(s->name().c_str(), *m_forceIn[i]);
         registerOutPort(std::string("off_" + s->name()).c_str(), *m_forceOut[i]);
-        m_forcemoment_offset_param.insert(std::pair<std::string, ForceMomentOffsetParam>(s->name(), ForceMomentOffsetParam()));
+        m_forcemoment_offset_param.insert(
+            std::pair<std::string, ForceMomentOffsetParam>(s->name(), ForceMomentOffsetParam()));
     }
     max_sensor_offset_calib_counter = static_cast<int>(8.0 / m_dt); // 8.0[s] by default
     return RTC::RTC_OK;
 }
-
-/*
-RTC::ReturnCode_t RemoveForceSensorLinkOffset::onFinalize()
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RemoveForceSensorLinkOffset::onStartup(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RemoveForceSensorLinkOffset::onShutdown(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
 
 RTC::ReturnCode_t RemoveForceSensorLinkOffset2::onActivated(RTC::UniqueId ec_id) {
     RTC_INFO_STREAM("onActivated(" << ec_id << ")");
@@ -155,8 +138,10 @@ RTC::ReturnCode_t RemoveForceSensorLinkOffset2::onExecute(RTC::UniqueId ec_id) {
                 cnoid::Vector3 data_r(m_force[i].data[3], m_force[i].data[4], m_force[i].data[5]);
                 if (DEBUGP) {
                     RTC_INFO_STREAM("wrench [" << m_forceIn[i]->name() << "]");
-                    RTC_INFO_STREAM("  raw force = " << data_p.format(Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]")));
-                    RTC_INFO_STREAM("  raw moment = " << data_r.format(Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]")));
+                    RTC_INFO_STREAM("  raw force = " << data_p.format(
+                                        Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]")));
+                    RTC_INFO_STREAM("  raw moment = " << data_r.format(
+                                        Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]")));
                 }
                 if (sensor) {
                     // real force sensor
@@ -186,8 +171,10 @@ RTC::ReturnCode_t RemoveForceSensorLinkOffset2::onExecute(RTC::UniqueId ec_id) {
                         m_force[i].data[3 + j] = fmp.off_moment(j);
                     }
                     if (DEBUGP) {
-                        RTC_INFO_STREAM("  off force = " << fmp.off_force.format(Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]")));
-                        RTC_INFO_STREAM("  off moment = " << fmp.off_moment.format(Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]")));
+                        RTC_INFO_STREAM("  off force = " << fmp.off_force.format(
+                                            Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]")));
+                        RTC_INFO_STREAM("  off moment = " << fmp.off_moment.format(
+                                            Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]")));
                     }
                 } else {
                     RTC_INFO_STREAM("unknwon force param " << sensor_name);
@@ -215,25 +202,29 @@ void RemoveForceSensorLinkOffset2::updateRootLinkPosRot(const cnoid::Vector3 &rp
 }
 
 void RemoveForceSensorLinkOffset2::printForceMomentOffsetParam(const std::string &i_name_) {
-    RTC_INFO_STREAM(
-        "  force_offset = " << m_forcemoment_offset_param[i_name_].force_offset.format(Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]"))
-                            << "[N]");
-    RTC_INFO_STREAM("  moment_offset = " << m_forcemoment_offset_param[i_name_].moment_offset.format(
-                                                Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]"))
+    RTC_INFO_STREAM("  force_offset = " << m_forcemoment_offset_param[i_name_].force_offset.format(
+                                               Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]"))
+                                        << "[N]");
+    RTC_INFO_STREAM("  moment_offset = " << m_forcemoment_offset_param[i_name_].moment_offset.format(Eigen::IOFormat(
+                                                Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]"))
                                          << "[Nm]");
-    RTC_INFO_STREAM("  link_offset_centroid = " << m_forcemoment_offset_param[i_name_].link_offset_centroid.format(
-                                                       Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]"))
-                                                << "[m]");
+    RTC_INFO_STREAM("  link_offset_centroid = "
+                    << m_forcemoment_offset_param[i_name_].link_offset_centroid.format(
+                           Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "]"))
+                    << "[m]");
     RTC_INFO_STREAM("  link_offset_mass = " << m_forcemoment_offset_param[i_name_].link_offset_mass << "[kg]");
 };
 
-bool RemoveForceSensorLinkOffset2::setForceMomentOffsetParam(const std::string &i_name_,
-                                                             const OpenHRP::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_) {
+bool RemoveForceSensorLinkOffset2::setForceMomentOffsetParam(
+    const std::string &i_name_, const OpenHRP::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_) {
     RTC_INFO_STREAM("setForceMomentOffsetParam [" << i_name_ << "]");
     if (m_forcemoment_offset_param.find(i_name_) != m_forcemoment_offset_param.end()) {
-        memcpy(m_forcemoment_offset_param[i_name_].force_offset.data(), i_param_.force_offset.get_buffer(), sizeof(double) * 3);
-        memcpy(m_forcemoment_offset_param[i_name_].moment_offset.data(), i_param_.moment_offset.get_buffer(), sizeof(double) * 3);
-        memcpy(m_forcemoment_offset_param[i_name_].link_offset_centroid.data(), i_param_.link_offset_centroid.get_buffer(), sizeof(double) * 3);
+        memcpy(m_forcemoment_offset_param[i_name_].force_offset.data(), i_param_.force_offset.get_buffer(),
+               sizeof(double) * 3);
+        memcpy(m_forcemoment_offset_param[i_name_].moment_offset.data(), i_param_.moment_offset.get_buffer(),
+               sizeof(double) * 3);
+        memcpy(m_forcemoment_offset_param[i_name_].link_offset_centroid.data(),
+               i_param_.link_offset_centroid.get_buffer(), sizeof(double) * 3);
         m_forcemoment_offset_param[i_name_].link_offset_mass = i_param_.link_offset_mass;
         this->printForceMomentOffsetParam(i_name_);
         return true;
@@ -243,13 +234,16 @@ bool RemoveForceSensorLinkOffset2::setForceMomentOffsetParam(const std::string &
     }
 }
 
-bool RemoveForceSensorLinkOffset2::getForceMomentOffsetParam(const std::string &i_name_,
-                                                             OpenHRP::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_) {
+bool RemoveForceSensorLinkOffset2::getForceMomentOffsetParam(
+    const std::string &i_name_, OpenHRP::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_) {
     if (m_forcemoment_offset_param.find(i_name_) != m_forcemoment_offset_param.end()) {
         // std::cerr << "OK " << i_name_ << " in getForceMomentOffsetParam" << std::endl;
-        memcpy(i_param_.force_offset.get_buffer(), m_forcemoment_offset_param[i_name_].force_offset.data(), sizeof(double) * 3);
-        memcpy(i_param_.moment_offset.get_buffer(), m_forcemoment_offset_param[i_name_].moment_offset.data(), sizeof(double) * 3);
-        memcpy(i_param_.link_offset_centroid.get_buffer(), m_forcemoment_offset_param[i_name_].link_offset_centroid.data(), sizeof(double) * 3);
+        memcpy(i_param_.force_offset.get_buffer(), m_forcemoment_offset_param[i_name_].force_offset.data(),
+               sizeof(double) * 3);
+        memcpy(i_param_.moment_offset.get_buffer(), m_forcemoment_offset_param[i_name_].moment_offset.data(),
+               sizeof(double) * 3);
+        memcpy(i_param_.link_offset_centroid.get_buffer(),
+               m_forcemoment_offset_param[i_name_].link_offset_centroid.data(), sizeof(double) * 3);
         i_param_.link_offset_mass = m_forcemoment_offset_param[i_name_].link_offset_mass;
         return true;
     } else {
@@ -294,11 +288,15 @@ bool RemoveForceSensorLinkOffset2::dumpForceMomentOffsetParams(const std::string
     RTC_INFO_STREAM("dumpForceMomentOffsetParams");
     std::ofstream ofs(filename.c_str());
     if (ofs.is_open()) {
-        for (std::map<std::string, ForceMomentOffsetParam>::iterator it = m_forcemoment_offset_param.begin(); it != m_forcemoment_offset_param.end(); it++) {
+        for (std::map<std::string, ForceMomentOffsetParam>::iterator it = m_forcemoment_offset_param.begin();
+             it != m_forcemoment_offset_param.end(); it++) {
             ofs << it->first << " ";
-            ofs << it->second.force_offset[0] << " " << it->second.force_offset[1] << " " << it->second.force_offset[2] << " ";
-            ofs << it->second.moment_offset[0] << " " << it->second.moment_offset[1] << " " << it->second.moment_offset[2] << " ";
-            ofs << it->second.link_offset_centroid[0] << " " << it->second.link_offset_centroid[1] << " " << it->second.link_offset_centroid[2] << " ";
+            ofs << it->second.force_offset[0] << " " << it->second.force_offset[1] << " " << it->second.force_offset[2]
+                << " ";
+            ofs << it->second.moment_offset[0] << " " << it->second.moment_offset[1] << " "
+                << it->second.moment_offset[2] << " ";
+            ofs << it->second.link_offset_centroid[0] << " " << it->second.link_offset_centroid[1] << " "
+                << it->second.link_offset_centroid[2] << " ";
             ofs << it->second.link_offset_mass << std::endl;
         }
     } else {
@@ -308,7 +306,8 @@ bool RemoveForceSensorLinkOffset2::dumpForceMomentOffsetParams(const std::string
     return true;
 };
 
-bool RemoveForceSensorLinkOffset2::removeForceSensorOffset(const ::OpenHRP::RemoveForceSensorLinkOffset2Service::StrSequence &names, const double tm) {
+bool RemoveForceSensorLinkOffset2::removeForceSensorOffset(
+    const ::OpenHRP::RemoveForceSensorLinkOffset2Service::StrSequence &names, const double tm) {
     RTC_INFO_STREAM("removeForceSensorOffset...");
 
     // Check argument validity
@@ -317,7 +316,8 @@ bool RemoveForceSensorLinkOffset2::removeForceSensorOffset(const ::OpenHRP::Remo
     {
         std::lock_guard<std::mutex> guard(m_mutex);
         if (names.length() == 0) { // If no sensor names are specified, calibrate all sensors.
-            std::cerr << "[" << m_profile.instance_name << "]   No sensor names are specified, calibrate all sensors = [";
+            std::cerr << "[" << m_profile.instance_name
+                      << "]   No sensor names are specified, calibrate all sensors = [";
             for (auto it = m_forcemoment_offset_param.begin(); it != m_forcemoment_offset_param.end(); it++) {
                 valid_names.push_back(it->first);
                 std::cerr << it->first << " ";
@@ -361,7 +361,8 @@ bool RemoveForceSensorLinkOffset2::removeForceSensorOffset(const ::OpenHRP::Remo
     {
         std::lock_guard<std::mutex> guard(m_mutex);
         for (size_t i = 0; i < valid_names.size(); i++) {
-            std::cerr << "[" << m_profile.instance_name << "]     Offset-removed force before calib [" << valid_names[i] << "], ";
+            std::cerr << "[" << m_profile.instance_name << "]     Offset-removed force before calib [" << valid_names[i]
+                      << "], ";
             std::cerr << "force = "
                       << m_forcemoment_offset_param[valid_names[i]].off_force.format(
                              Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "][N]"))
@@ -396,7 +397,8 @@ bool RemoveForceSensorLinkOffset2::removeForceSensorOffset(const ::OpenHRP::Remo
                       << m_forcemoment_offset_param[valid_names[i]].moment_offset.format(
                              Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "][Nm]"))
                       << std::endl;
-            std::cerr << "[" << m_profile.instance_name << "]     Offset-removed force after calib [" << valid_names[i] << "], ";
+            std::cerr << "[" << m_profile.instance_name << "]     Offset-removed force after calib [" << valid_names[i]
+                      << "], ";
             std::cerr << "force = "
                       << m_forcemoment_offset_param[valid_names[i]].off_force.format(
                              Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "[", "][N]"))
@@ -411,44 +413,10 @@ bool RemoveForceSensorLinkOffset2::removeForceSensorOffset(const ::OpenHRP::Remo
     return true;
 }
 
-/*
-RTC::ReturnCode_t RemoveForceSensorLinkOffset::onAborting(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RemoveForceSensorLinkOffset::onError(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RemoveForceSensorLinkOffset::onReset(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RemoveForceSensorLinkOffset::onStateUpdate(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RemoveForceSensorLinkOffset::onRateChanged(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
 extern "C" {
 void RemoveForceSensorLinkOffset2Init(RTC::Manager *manager) {
     RTC::Properties profile(removeforcesensorlinkoffset2_spec);
-    manager->registerFactory(profile, RTC::Create<RemoveForceSensorLinkOffset2>, RTC::Delete<RemoveForceSensorLinkOffset2>);
+    manager->registerFactory(profile, RTC::Create<RemoveForceSensorLinkOffset2>,
+                             RTC::Delete<RemoveForceSensorLinkOffset2>);
 }
 };

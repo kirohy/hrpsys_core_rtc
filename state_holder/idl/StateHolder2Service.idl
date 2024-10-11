@@ -1,7 +1,3 @@
-/**
- * @file StateHolderService.idl
- * @brief Services for the state holder interface
- */
 module OpenHRP
 {
   interface StateHolder2Service

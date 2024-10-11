@@ -32,8 +32,9 @@ static const char *kalmanfilter2_spec[] = {"implementation_id",
                                            ""};
 
 KalmanFilter2::KalmanFilter2(RTC::Manager *manager)
-    : RTC::DataFlowComponentBase(manager), m_rateIn("rate", m_rate), m_accIn("acc", m_acc), m_accRefIn("accRef", m_accRef), m_rpyIn("rpyIn", m_rate),
-      m_qCurrentIn("qCurrent", m_qCurrent), m_rpyOut("rpy", m_rpy), m_rpyRawOut("rpy_raw", m_rpyRaw), m_baseRpyCurrentOut("baseRpyCurrent", m_baseRpyCurrent),
+    : RTC::DataFlowComponentBase(manager), m_rateIn("rate", m_rate), m_accIn("acc", m_acc),
+      m_accRefIn("accRef", m_accRef), m_rpyIn("rpyIn", m_rate), m_qCurrentIn("qCurrent", m_qCurrent),
+      m_rpyOut("rpy", m_rpy), m_rpyRawOut("rpy_raw", m_rpyRaw), m_baseRpyCurrentOut("baseRpyCurrent", m_baseRpyCurrent),
       m_KalmanFilterServicePort("KalmanFilter2Service"), m_robot(cnoid::BodyPtr()), m_debugLevel(0), dummy(0), loop(0) {
     m_service0.kalman(this);
 }
@@ -121,27 +122,6 @@ RTC::ReturnCode_t KalmanFilter2::onInitialize() {
     return RTC::RTC_OK;
 }
 
-/*
-  RTC::ReturnCode_t KalmanFilter::onFinalize()
-  {
-  return RTC::RTC_OK;
-  }
-*/
-
-/*
-  RTC::ReturnCode_t KalmanFilter::onStartup(RTC::UniqueId ec_id)
-  {
-  return RTC::RTC_OK;
-  }
-*/
-
-/*
-  RTC::ReturnCode_t KalmanFilter::onShutdown(RTC::UniqueId ec_id)
-  {
-  return RTC::RTC_OK;
-  }
-*/
-
 RTC::ReturnCode_t KalmanFilter2::onActivated(RTC::UniqueId ec_id) {
     RTC_INFO_STREAM("onActivated(" << ec_id << ")");
     return RTC::RTC_OK;
@@ -180,10 +160,12 @@ RTC::ReturnCode_t KalmanFilter2::onExecute(RTC::UniqueId ec_id) {
     if (m_accIn.isNew()) {
         m_accIn.read();
 
-        cnoid::Vector3 acc  = m_sensorR * cnoid::Vector3(m_acc.data.ax - sx_ref + acc_offset(0), m_acc.data.ay - sy_ref + acc_offset(1),
-                                                        m_acc.data.az - sz_ref + acc_offset(2)); // transform to imaginary acc data
+        cnoid::Vector3 acc =
+            m_sensorR * cnoid::Vector3(m_acc.data.ax - sx_ref + acc_offset(0), m_acc.data.ay - sy_ref + acc_offset(1),
+                                       m_acc.data.az - sz_ref + acc_offset(2)); // transform to imaginary acc data
         acc                 = sensorR_offset * acc;
-        cnoid::Vector3 gyro = m_sensorR * cnoid::Vector3(m_rate.data.avx, m_rate.data.avy, m_rate.data.avz); // transform to imaginary rate data
+        cnoid::Vector3 gyro = m_sensorR * cnoid::Vector3(m_rate.data.avx, m_rate.data.avy,
+                                                         m_rate.data.avz); // transform to imaginary rate data
         gyro                = sensorR_offset * gyro;
         if (DEBUGP) {
             RTC_INFO_STREAM("raw data acc : " << std::endl << acc);
@@ -226,41 +208,6 @@ RTC::ReturnCode_t KalmanFilter2::onExecute(RTC::UniqueId ec_id) {
     return RTC::RTC_OK;
 }
 
-/*
-  RTC::ReturnCode_t KalmanFilter::onAborting(RTC::UniqueId ec_id)
-  {
-  return RTC::RTC_OK;
-  }
-*/
-
-/*
-  RTC::ReturnCode_t KalmanFilter::onError(RTC::UniqueId ec_id)
-  {
-  return RTC::RTC_OK;
-  }
-*/
-
-/*
-  RTC::ReturnCode_t KalmanFilter::onReset(RTC::UniqueId ec_id)
-  {
-  return RTC::RTC_OK;
-  }
-*/
-
-/*
-  RTC::ReturnCode_t KalmanFilter::onStateUpdate(RTC::UniqueId ec_id)
-  {
-  return RTC::RTC_OK;
-  }
-*/
-
-/*
-  RTC::ReturnCode_t KalmanFilter::onRateChanged(RTC::UniqueId ec_id)
-  {
-  return RTC::RTC_OK;
-  }
-*/
-
 bool KalmanFilter2::setKalmanFilterParam(const OpenHRP::KalmanFilter2Service::KalmanFilterParam &i_param) {
     RTC_INFO_STREAM("setKalmanFilterParam");
     rpy_kf.setParam(m_dt, i_param.Q_angle, i_param.Q_rate, i_param.R_angle, std::string(m_profile.instance_name));
@@ -273,10 +220,13 @@ bool KalmanFilter2::setKalmanFilterParam(const OpenHRP::KalmanFilter2Service::Ka
         rpyoff(i) = i_param.sensorRPY_offset[i];
     }
     sensorR_offset = cnoid::rotFromRpy(rpyoff);
-    RTC_INFO_STREAM(
-        "  kf_algorithm=" << (kf_algorithm == OpenHRP::KalmanFilter2Service::RPYKalmanFilter ? "RPYKalmanFilter" : "QuaternionExtendedKalmanFilter"));
-    RTC_INFO_STREAM("  acc_offset = " << acc_offset.format(Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "    [", "]")));
-    RTC_INFO_STREAM("  sensorRPY_offset = " << rpyoff.format(Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "    [", "]")));
+    RTC_INFO_STREAM("  kf_algorithm=" << (kf_algorithm == OpenHRP::KalmanFilter2Service::RPYKalmanFilter
+                                              ? "RPYKalmanFilter"
+                                              : "QuaternionExtendedKalmanFilter"));
+    RTC_INFO_STREAM("  acc_offset = " << acc_offset.format(
+                        Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "    [", "]")));
+    RTC_INFO_STREAM("  sensorRPY_offset = "
+                    << rpyoff.format(Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ", ", "", "", "    [", "]")));
     return true;
 }
 

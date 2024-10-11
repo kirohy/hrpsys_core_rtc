@@ -10,7 +10,8 @@ seqplay::seqplay(unsigned int i_dof, double i_dt, unsigned int i_fnum, unsigned 
     interpolators[P]             = std::make_shared<interpolator>(3, i_dt);
     interpolators[RPY]           = std::make_shared<interpolator>(3, i_dt);
     interpolators[TQ]            = std::make_shared<interpolator>(i_dof, i_dt);
-    interpolators[WRENCHES]      = std::make_shared<interpolator>(6 * i_fnum, i_dt, interpolator::HOFFARBIB, 100); // wrenches = 6 * [number of force sensors]
+    interpolators[WRENCHES]      = std::make_shared<interpolator>(6 * i_fnum, i_dt, interpolator::HOFFARBIB,
+                                                             100); // wrenches = 6 * [number of force sensors]
     interpolators[OPTIONAL_DATA] = std::make_shared<interpolator>(optional_data_dim, i_dt);
     // Set interpolator name
     interpolators[Q]->setName("Q");
@@ -202,8 +203,9 @@ void seqplay::setJointAngle(unsigned int i_rank, double jv, double tm) {
     interpolators[Q]->setGoal(pos, tm);
 }
 
-void seqplay::playPattern(std::vector<const double *> pos, std::vector<const double *> zmp, std::vector<const double *> rpy, std::vector<double> tm,
-                          const double *qInit, unsigned int len) {
+void seqplay::playPattern(std::vector<const double *> pos, std::vector<const double *> zmp,
+                          std::vector<const double *> rpy, std::vector<double> tm, const double *qInit,
+                          unsigned int len) {
     const double *q = NULL, *z = NULL, *a = NULL, *p = NULL, *e = NULL, *tq = NULL, *wr = NULL, *od = NULL;
     double t  = 0;
     double *v = new double[len];
@@ -339,8 +341,8 @@ void seqplay::pop_back() {
     }
 }
 
-void seqplay::get(double *o_q, double *o_zmp, double *o_accel, double *o_basePos, double *o_baseRpy, double *o_tq, double *o_wrenches,
-                  double *o_optional_data) {
+void seqplay::get(double *o_q, double *o_zmp, double *o_accel, double *o_basePos, double *o_baseRpy, double *o_tq,
+                  double *o_wrenches, double *o_optional_data) {
     double v[m_dof];
     interpolators[Q]->get(o_q, v);
     for (auto it = groupInterpolators.begin(); it != groupInterpolators.end(); ++it) {
@@ -362,14 +364,18 @@ void seqplay::get(double *o_q, double *o_zmp, double *o_accel, double *o_basePos
     interpolators[OPTIONAL_DATA]->get(o_optional_data);
 }
 
-void seqplay::go(const double *i_q, const double *i_zmp, const double *i_acc, const double *i_p, const double *i_rpy, const double *i_tq,
-                 const double *i_wrenches, const double *i_optional_data, double i_time, bool immediate) {
-    go(i_q, i_zmp, i_acc, i_p, i_rpy, i_tq, i_wrenches, i_optional_data, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, i_time, immediate);
+void seqplay::go(const double *i_q, const double *i_zmp, const double *i_acc, const double *i_p, const double *i_rpy,
+                 const double *i_tq, const double *i_wrenches, const double *i_optional_data, double i_time,
+                 bool immediate) {
+    go(i_q, i_zmp, i_acc, i_p, i_rpy, i_tq, i_wrenches, i_optional_data, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+       i_time, immediate);
 }
 
-void seqplay::go(const double *i_q, const double *i_zmp, const double *i_acc, const double *i_p, const double *i_rpy, const double *i_tq,
-                 const double *i_wrenches, const double *i_optional_data, const double *ii_q, const double *ii_zmp, const double *ii_acc, const double *ii_p,
-                 const double *ii_rpy, const double *ii_tq, const double *ii_wrenches, const double *ii_optional_data, double i_time, bool immediate) {
+void seqplay::go(const double *i_q, const double *i_zmp, const double *i_acc, const double *i_p, const double *i_rpy,
+                 const double *i_tq, const double *i_wrenches, const double *i_optional_data, const double *ii_q,
+                 const double *ii_zmp, const double *ii_acc, const double *ii_p, const double *ii_rpy,
+                 const double *ii_tq, const double *ii_wrenches, const double *ii_optional_data, double i_time,
+                 bool immediate) {
     if (i_q) interpolators[Q]->go(i_q, ii_q, i_time, false);
     if (i_zmp) interpolators[ZMP]->go(i_zmp, ii_zmp, i_time, false);
     if (i_acc) interpolators[ACC]->go(i_acc, ii_acc, i_time, false);
@@ -382,7 +388,8 @@ void seqplay::go(const double *i_q, const double *i_zmp, const double *i_acc, co
 }
 
 bool seqplay::setInterpolationMode(interpolator::interpolation_mode i_mode_) {
-    if (i_mode_ != interpolator::LINEAR && i_mode_ != interpolator::HOFFARBIB && i_mode_ != interpolator::QUINTICSPLINE && i_mode_ != interpolator::CUBICSPLINE)
+    if (i_mode_ != interpolator::LINEAR && i_mode_ != interpolator::HOFFARBIB &&
+        i_mode_ != interpolator::QUINTICSPLINE && i_mode_ != interpolator::CUBICSPLINE)
         return false;
 
     bool ret = true;
@@ -458,7 +465,10 @@ bool seqplay::resetJointGroup(const char *gname, const double *full) {
         for (auto it = groupInterpolators.begin(); it != groupInterpolators.end(); it++) {
             if (it->first != std::string(gname)) { // other
                 auto gi = it->second;
-                if (gi && (gi->state == groupInterpolator::created || gi->state == groupInterpolator::working) && gi->inter->isEmpty()) { gi->set(full); }
+                if (gi && (gi->state == groupInterpolator::created || gi->state == groupInterpolator::working) &&
+                    gi->inter->isEmpty()) {
+                    gi->set(full);
+                }
             }
         }
         // update for non working interpolators
@@ -479,8 +489,9 @@ bool seqplay::setJointAnglesOfGroup(const char *gname, const double *i_qRef, con
     auto i = groupInterpolators[gname];
     if (i) {
         if (i_qsize != i->indices.size()) {
-            std::cerr << "[setJointAnglesOfGroup] group name " << gname << " : size of manipulater is not equal to input. " << i_qsize
-                      << " /= " << i->indices.size() << std::endl;
+            std::cerr << "[setJointAnglesOfGroup] group name " << gname
+                      << " : size of manipulater is not equal to input. " << i_qsize << " /= " << i->indices.size()
+                      << std::endl;
             return false;
         }
         if (i->state == groupInterpolator::created) {
@@ -515,7 +526,8 @@ void seqplay::clearOfGroup(const char *gname, double i_timeLimit) {
     if (i) { i->clear(i_timeLimit); }
 }
 
-bool seqplay::playPatternOfGroup(const char *gname, std::vector<const double *> pos, std::vector<double> tm, const double *qInit, unsigned int len) {
+bool seqplay::playPatternOfGroup(const char *gname, std::vector<const double *> pos, std::vector<double> tm,
+                                 const double *qInit, unsigned int len) {
     char *s = (char *)gname;
     while (*s) {
         *s = toupper(*s);
@@ -524,8 +536,8 @@ bool seqplay::playPatternOfGroup(const char *gname, std::vector<const double *> 
     auto i = groupInterpolators[gname];
     if (i) {
         if (len != i->indices.size()) {
-            std::cerr << "[playPatternOfGroup] group name " << gname << " : size of manipulater is not equal to input. " << len << " /= " << i->indices.size()
-                      << std::endl;
+            std::cerr << "[playPatternOfGroup] group name " << gname << " : size of manipulater is not equal to input. "
+                      << len << " /= " << i->indices.size() << std::endl;
             return false;
         }
         if (i->state == groupInterpolator::created) {
@@ -653,10 +665,11 @@ bool seqplay::clearJointAngles() {
     return true;
 }
 
-bool seqplay::setJointAnglesSequenceFull(std::vector<const double *> i_pos, std::vector<const double *> i_vel, std::vector<const double *> i_torques,
-                                         std::vector<const double *> i_bpos, std::vector<const double *> i_brpy, std::vector<const double *> i_bacc,
-                                         std::vector<const double *> i_zmps, std::vector<const double *> i_wrenches, std::vector<const double *> i_optionals,
-                                         std::vector<double> i_tm) {
+bool seqplay::setJointAnglesSequenceFull(std::vector<const double *> i_pos, std::vector<const double *> i_vel,
+                                         std::vector<const double *> i_torques, std::vector<const double *> i_bpos,
+                                         std::vector<const double *> i_brpy, std::vector<const double *> i_bacc,
+                                         std::vector<const double *> i_zmps, std::vector<const double *> i_wrenches,
+                                         std::vector<const double *> i_optionals, std::vector<double> i_tm) {
     // setJointAngles to override curren tgoal
     double x[m_dof], v[m_dof], a[m_dof];
     interpolators[Q]->get(x, v, a, false);
@@ -685,7 +698,8 @@ bool seqplay::setJointAnglesSequenceFull(std::vector<const double *> i_pos, std:
     interpolators[ACC]->clear();
     interpolators[ACC]->push(bacc, dummy_3, dummy_3, true);
     int fnum = interpolators[WRENCHES]->dimension() / 6, optional_data_dim = interpolators[OPTIONAL_DATA]->dimension();
-    double zmp[3], wrench[6 * fnum], dummy_fnum[6 * fnum], optional[optional_data_dim], dummy_optional[optional_data_dim];
+    double zmp[3], wrench[6 * fnum], dummy_fnum[6 * fnum], optional[optional_data_dim],
+        dummy_optional[optional_data_dim];
     for (int j = 0; j < 6 * fnum; j++) {
         dummy_dof[j] = 0.0;
     }
@@ -773,7 +787,8 @@ bool seqplay::setJointAnglesSequenceFull(std::vector<const double *> i_pos, std:
     return true;
 }
 
-bool seqplay::setJointAnglesSequenceOfGroup(const char *gname, std::vector<const double *> pos, std::vector<double> tm, const size_t pos_size) {
+bool seqplay::setJointAnglesSequenceOfGroup(const char *gname, std::vector<const double *> pos, std::vector<double> tm,
+                                            const size_t pos_size) {
     char *s = (char *)gname;
     while (*s) {
         *s = toupper(*s);
@@ -786,8 +801,9 @@ bool seqplay::setJointAnglesSequenceOfGroup(const char *gname, std::vector<const
         return false;
     }
     if (pos_size != i->indices.size()) {
-        std::cerr << "[setJointAnglesSequenceOfGroup] group name " << gname << " : size of manipulater is not equal to input. " << pos_size
-                  << " /= " << i->indices.size() << std::endl;
+        std::cerr << "[setJointAnglesSequenceOfGroup] group name " << gname
+                  << " : size of manipulater is not equal to input. " << pos_size << " /= " << i->indices.size()
+                  << std::endl;
         return false;
     }
     int len = i->indices.size();

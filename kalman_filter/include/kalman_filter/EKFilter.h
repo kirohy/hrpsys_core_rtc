@@ -13,8 +13,9 @@ namespace cnoid {
 class EKFilter {
   public:
     EKFilter()
-        : P(cnoid::Matrix7::Identity() * 0.1), Q(cnoid::Matrix3::Identity() * 0.001), R(cnoid::Matrix3::Identity() * 0.03),
-          g_vec(cnoid::Vector3(0.0, 0.0, 9.80665)), z_k(cnoid::Vector3(0.0, 0.0, 9.80665)), min_mag_thre_acc(0.005), max_mag_thre_acc(0.05),
+        : P(cnoid::Matrix7::Identity() * 0.1), Q(cnoid::Matrix3::Identity() * 0.001),
+          R(cnoid::Matrix3::Identity() * 0.03), g_vec(cnoid::Vector3(0.0, 0.0, 9.80665)),
+          z_k(cnoid::Vector3(0.0, 0.0, 9.80665)), min_mag_thre_acc(0.005), max_mag_thre_acc(0.05),
           min_mag_thre_gyro(0.0075), max_mag_thre_gyro(0.035) {
         x << 1, 0, 0, 0, 0, 0, 0;
     }
@@ -26,7 +27,8 @@ class EKFilter {
         omega << 0, -w[0], -w[1], -w[2], w[0], 0, w[2], -w[1], w[1], -w[2], 0, w[0], w[2], w[1], -w[0], 0;
     }
 
-    void calcPredictedState(cnoid::Vector7 &_x_a_priori, const cnoid::Vector4 &q, const cnoid::Vector3 &gyro, const cnoid::Vector3 &drift) const {
+    void calcPredictedState(cnoid::Vector7 &_x_a_priori, const cnoid::Vector4 &q, const cnoid::Vector3 &gyro,
+                            const cnoid::Vector3 &drift) const {
         /* x_a_priori = f(x, u) */
         cnoid::Vector4 q_a_priori;
         cnoid::Vector3 gyro_compensated = gyro - drift;
@@ -37,7 +39,8 @@ class EKFilter {
         _x_a_priori.tail<3>() = drift;
     }
 
-    void calcF(cnoid::Matrix7 &F, const cnoid::Vector4 &q, const cnoid::Vector3 &gyro, const cnoid::Vector3 &drift) const {
+    void calcF(cnoid::Matrix7 &F, const cnoid::Vector4 &q, const cnoid::Vector3 &gyro,
+               const cnoid::Vector3 &drift) const {
         F                               = cnoid::Matrix7::Identity();
         cnoid::Vector3 gyro_compensated = gyro - drift;
         cnoid::Matrix4 omega;
@@ -112,19 +115,24 @@ class EKFilter {
 
 
     // Basically Equation (23), (24) and (25) in the paper [1]
-    // [1] Chul Woo Kang and Chan Gook Park. Attitude estimation with accelerometers and gyros using fuzzy tuned Kalman filter.
+    // [1] Chul Woo Kang and Chan Gook Park. Attitude estimation with accelerometers and gyros using fuzzy tuned Kalman
+    // filter.
     //     In European Control Conference, 2009.
     void calcRWithFuzzyRule(cnoid::Matrix3 &fuzzyR, const cnoid::Vector3 &acc, const cnoid::Vector3 &gyro) const {
-        double alpha         = std::min(std::fabs(acc.norm() - g_vec.norm()) / g_vec.norm(), 0.1);
-        double beta          = std::min(gyro.norm(), 0.05);
-        double large_mu_acc  = std::max(std::min((alpha - min_mag_thre_acc) / (max_mag_thre_acc - min_mag_thre_acc), 1.0), 0.0);
-        double large_mu_gyro = std::max(std::min((beta - min_mag_thre_gyro) / (max_mag_thre_gyro - min_mag_thre_gyro), 1.0), 0.0);
+        double alpha = std::min(std::fabs(acc.norm() - g_vec.norm()) / g_vec.norm(), 0.1);
+        double beta  = std::min(gyro.norm(), 0.05);
+        double large_mu_acc =
+            std::max(std::min((alpha - min_mag_thre_acc) / (max_mag_thre_acc - min_mag_thre_acc), 1.0), 0.0);
+        double large_mu_gyro =
+            std::max(std::min((beta - min_mag_thre_gyro) / (max_mag_thre_gyro - min_mag_thre_gyro), 1.0), 0.0);
         double w1, w2, w3, w4;
-        w1        = (1.0 - large_mu_acc) * (1.0 - large_mu_gyro);
-        w2        = (1.0 - large_mu_acc) * large_mu_gyro;
-        w3        = large_mu_acc * (1.0 - large_mu_gyro);
-        w4        = large_mu_acc * large_mu_gyro;
-        double z  = (w1 * 0.0 + w2 * (3.5 * alpha + 8.0 * beta + 0.5) + w3 * (3.5 * alpha + 8.0 * beta + 0.5) + w4 * 1.0) / (w1 + w2 + w3 + w4);
+        w1 = (1.0 - large_mu_acc) * (1.0 - large_mu_gyro);
+        w2 = (1.0 - large_mu_acc) * large_mu_gyro;
+        w3 = large_mu_acc * (1.0 - large_mu_gyro);
+        w4 = large_mu_acc * large_mu_gyro;
+        double z =
+            (w1 * 0.0 + w2 * (3.5 * alpha + 8.0 * beta + 0.5) + w3 * (3.5 * alpha + 8.0 * beta + 0.5) + w4 * 1.0) /
+            (w1 + w2 + w3 + w4);
         double k1 = 400;
         fuzzyR    = R + k1 * z * z * cnoid::Matrix3::Identity();
     };

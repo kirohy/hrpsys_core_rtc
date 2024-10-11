@@ -6,19 +6,20 @@
 #include <string>
 
 class interpolator {
-    // interpolator class is to interpolate from current value to goal value considering position, velocities, and accelerations.
+    // interpolator class is to interpolate from current value to goal value considering position, velocities, and
+    // accelerations.
     //   Two status : empty or not
-    //                Interpolator interpolates based on remaining time (remain_t) and pushes value to queue (q, dq, ddq).
-    //                Users can get interpolated results from queue (q, dq, ddq).
-    //                If remain_t <= 0 and queue is empty, interpolator is "empty", otherwise "not empty".
-    //                This is related with isEmpty() function.
+    //                Interpolator interpolates based on remaining time (remain_t) and pushes value to queue (q, dq,
+    //                ddq). Users can get interpolated results from queue (q, dq, ddq). If remain_t <= 0 and queue is
+    //                empty, interpolator is "empty", otherwise "not empty". This is related with isEmpty() function.
     //   Setting goal value : setGoal(), go(), and load()
     //   Getting current value : get()
     //   Resetting current value : set()
     //   Interpolate : interpolate()
   public:
     typedef enum { LINEAR, HOFFARBIB, QUINTICSPLINE, CUBICSPLINE } interpolation_mode;
-    interpolator(int dim_, double dt_, interpolation_mode imode_ = HOFFARBIB, double default_avg_vel_ = 0.5); // default_avg_vel = [rad/s]
+    interpolator(int dim_, double dt_, interpolation_mode imode_ = HOFFARBIB,
+                 double default_avg_vel_ = 0.5); // default_avg_vel = [rad/s]
     ~interpolator();
     void push(const double *x_, const double *v_, const double *a_, bool immediate = true);
     double *front();
@@ -39,8 +40,10 @@ class interpolator {
     void pop_back();
     void clear();
     void sync();
-    void load(std::string fname, double time_to_start = 1.0, double scale = 1.0, bool immediate = true, size_t offset1 = 0, size_t offset2 = 0);
-    void load(const char *fname, double time_to_start = 1.0, double scale = 1.0, bool immediate = true, size_t offset1 = 0, size_t offset2 = 0);
+    void load(std::string fname, double time_to_start = 1.0, double scale = 1.0, bool immediate = true,
+              size_t offset1 = 0, size_t offset2 = 0);
+    void load(const char *fname, double time_to_start = 1.0, double scale = 1.0, bool immediate = true,
+              size_t offset1 = 0, size_t offset2 = 0);
     bool isEmpty();
     double remain_time();
     double calc_interpolation_time(const double *g);
@@ -81,7 +84,8 @@ class interpolator {
     // Interpolator name
     std::string name;
 
-    void hoffarbib(double &remain_t_, double a0, double a1, double a2, double a3, double a4, double a5, double &xx, double &vv, double &aa);
+    void hoffarbib(double &remain_t_, double a0, double a1, double a2, double a3, double a4, double a5, double &xx,
+                   double &vv, double &aa);
     void linear_interpolation(double &remain_t_, double gx, double &xx, double &vv, double &aa);
     // Mutex to avoid poping twice the same element
     std::mutex pop_mutex;

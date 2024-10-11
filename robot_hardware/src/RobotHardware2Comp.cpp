@@ -64,7 +64,9 @@ int main(int argc, char **argv) {
 #ifndef __APPLE__
     try {
         manager->load("libhrpEC.so", "hrpECInit");
-    } catch (RTC::ModuleManager::NotFound &ex) { std::cerr << ex.name << std::endl; } catch (RTC::ModuleManager::Error &ex) {
+    } catch (RTC::ModuleManager::NotFound &ex) {
+        std::cerr << ex.name << std::endl;
+    } catch (RTC::ModuleManager::Error &ex) {
         std::cerr << ex.reason << std::endl;
         std::cerr << dlerror() << std::endl;
     } catch (...) { std::cerr << "exception in loading libhrpEC.so" << std::endl; }

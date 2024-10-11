@@ -7,7 +7,8 @@ using namespace OpenHRP;
 
 class StateHolder2;
 
-class StateHolder2Service_impl : public virtual POA_OpenHRP::StateHolder2Service, public virtual PortableServer::RefCountServantBase {
+class StateHolder2Service_impl : public virtual POA_OpenHRP::StateHolder2Service,
+                                 public virtual PortableServer::RefCountServantBase {
   public:
     StateHolder2Service_impl();
     virtual ~StateHolder2Service_impl();

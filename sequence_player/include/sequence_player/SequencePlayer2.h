@@ -19,7 +19,8 @@
 #include <semaphore.h>
 
 #define RTC_INFO_STREAM(var) std::cout << "[" << m_profile.instance_name << "] " << var << std::endl;
-#define RTC_WARN_STREAM(var) std::cerr << "\x1b[31m[" << m_profile.instance_name << "] " << var << "\x1b[39m" << std::endl;
+#define RTC_WARN_STREAM(var)                                                                                           \
+    std::cerr << "\x1b[31m[" << m_profile.instance_name << "] " << var << "\x1b[39m" << std::endl;
 
 class SequencePlayer2 : public RTC::DataFlowComponentBase {
   public:
@@ -43,11 +44,14 @@ class SequencePlayer2 : public RTC::DataFlowComponentBase {
     bool setJointAngle(short id, double angle, double tm);
     bool setJointAngles(const double *angles, double tm);
     bool setJointAngles(const double *angles, const bool *mask, double tm);
-    bool setJointAnglesSequence(const OpenHRP::dSequenceSequence angless, const OpenHRP::bSequence &mask, const OpenHRP::dSequence &times);
+    bool setJointAnglesSequence(const OpenHRP::dSequenceSequence angless, const OpenHRP::bSequence &mask,
+                                const OpenHRP::dSequence &times);
     bool setJointAnglesSequenceFull(const OpenHRP::dSequenceSequence i_jvss, const OpenHRP::dSequenceSequence i_vels,
                                     const OpenHRP::dSequenceSequence i_torques, const OpenHRP::dSequenceSequence i_poss,
-                                    const OpenHRP::dSequenceSequence i_rpys, const OpenHRP::dSequenceSequence i_accs, const OpenHRP::dSequenceSequence i_zmps,
-                                    const OpenHRP::dSequenceSequence i_wrenches, const OpenHRP::dSequenceSequence i_optionals, const dSequence i_tms);
+                                    const OpenHRP::dSequenceSequence i_rpys, const OpenHRP::dSequenceSequence i_accs,
+                                    const OpenHRP::dSequenceSequence i_zmps,
+                                    const OpenHRP::dSequenceSequence i_wrenches,
+                                    const OpenHRP::dSequenceSequence i_optionals, const dSequence i_tms);
     bool clearJointAngles();
     bool setBasePos(const double *pos, double tm);
     bool setBaseRpy(const double *rpy, double tm);
@@ -55,14 +59,15 @@ class SequencePlayer2 : public RTC::DataFlowComponentBase {
     bool setTargetPose(const char *gname, const double *xyz, const double *rpy, double tm, const char *frame_name);
     bool setWrenches(const double *wrenches, double tm);
     void loadPattern(const char *basename, double time);
-    void playPattern(const OpenHRP::dSequenceSequence &pos, const OpenHRP::dSequenceSequence &rpy, const OpenHRP::dSequenceSequence &zmp,
-                     const OpenHRP::dSequence &tm);
+    void playPattern(const OpenHRP::dSequenceSequence &pos, const OpenHRP::dSequenceSequence &rpy,
+                     const OpenHRP::dSequenceSequence &zmp, const OpenHRP::dSequence &tm);
     bool setInterpolationMode(OpenHRP::SequencePlayer2Service::interpolationMode i_mode_);
     bool setInitialState(double tm = 0.0);
     bool addJointGroup(const char *gname, const OpenHRP::SequencePlayer2Service::StrSequence &jnames);
     bool removeJointGroup(const char *gname);
     bool setJointAnglesOfGroup(const char *gname, const OpenHRP::dSequence &jvs, double tm);
-    bool setJointAnglesSequenceOfGroup(const char *gname, const OpenHRP::dSequenceSequence angless, const OpenHRP::dSequence &times);
+    bool setJointAnglesSequenceOfGroup(const char *gname, const OpenHRP::dSequenceSequence angless,
+                                       const OpenHRP::dSequence &times);
     bool clearJointAnglesOfGroup(const char *gname);
     bool playPatternOfGroup(const char *gname, const OpenHRP::dSequenceSequence &pos, const OpenHRP::dSequence &tm);
 

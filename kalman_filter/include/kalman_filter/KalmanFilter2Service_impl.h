@@ -5,7 +5,8 @@
 
 class KalmanFilter2;
 
-class KalmanFilter2Service_impl : public virtual POA_OpenHRP::KalmanFilter2Service, public virtual PortableServer::RefCountServantBase {
+class KalmanFilter2Service_impl : public virtual POA_OpenHRP::KalmanFilter2Service,
+                                  public virtual PortableServer::RefCountServantBase {
   public:
     KalmanFilter2Service_impl();
     virtual ~KalmanFilter2Service_impl();

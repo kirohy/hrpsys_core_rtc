@@ -1,6 +1,10 @@
 #ifndef REMOVEFORCESENSORLINKOFFSET2_H
 #define REMOVEFORCESENSORLINKOFFSET2_H
 
+#include <cnoid/Body>
+#include <cnoid/EigenUtil>
+#include <cnoid/JointPath>
+#include <cnoid/Link>
 #include <rtm/CorbaPort.h>
 #include <rtm/DataFlowComponentBase.h>
 #include <rtm/DataInPort.h>
@@ -10,10 +14,6 @@
 #include <rtm/idl/BasicDataTypeSkel.h>
 #include <rtm/idl/ExtendedDataTypes.hh>
 #include <rtm/idl/ExtendedDataTypesSkel.h>
-#include <cnoid/Body>
-#include <cnoid/EigenUtil>
-#include <cnoid/JointPath>
-#include <cnoid/Link>
 
 #include <memory>
 #include <mutex>
@@ -22,7 +22,8 @@
 #include "RemoveForceSensorLinkOffset2Service_impl.h"
 
 #define RTC_INFO_STREAM(var) std::cout << "[" << m_profile.instance_name << "] " << var << std::endl;
-#define RTC_WARN_STREAM(var) std::cerr << "\x1b[31m[" << m_profile.instance_name << "] " << var << "\x1b[39m" << std::endl;
+#define RTC_WARN_STREAM(var)                                                                                           \
+    std::cerr << "\x1b[31m[" << m_profile.instance_name << "] " << var << "\x1b[39m" << std::endl;
 
 class RemoveForceSensorLinkOffset2 : public RTC::DataFlowComponentBase {
   public:
@@ -35,11 +36,15 @@ class RemoveForceSensorLinkOffset2 : public RTC::DataFlowComponentBase {
     virtual RTC::ReturnCode_t onDeactivated(RTC::UniqueId ec_id);
     virtual RTC::ReturnCode_t onExecute(RTC::UniqueId ec_id);
 
-    bool setForceMomentOffsetParam(const std::string &i_name_, const OpenHRP::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_);
-    bool getForceMomentOffsetParam(const std::string &i_name_, OpenHRP::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_);
+    bool
+    setForceMomentOffsetParam(const std::string &i_name_,
+                              const OpenHRP::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_);
+    bool getForceMomentOffsetParam(const std::string &i_name_,
+                                   OpenHRP::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_);
     bool loadForceMomentOffsetParams(const std::string &filename);
     bool dumpForceMomentOffsetParams(const std::string &filename);
-    bool removeForceSensorOffset(const ::OpenHRP::RemoveForceSensorLinkOffset2Service::StrSequence &names, const double tm);
+    bool removeForceSensorOffset(const ::OpenHRP::RemoveForceSensorLinkOffset2Service::StrSequence &names,
+                                 const double tm);
 
   protected:
     RTC::TimedDoubleSeq m_qCurrent;
@@ -66,9 +71,11 @@ class RemoveForceSensorLinkOffset2 : public RTC::DataFlowComponentBase {
         sem_t wait_sem;
 
         ForceMomentOffsetParam()
-            : force_offset(cnoid::Vector3::Zero()), moment_offset(cnoid::Vector3::Zero()), off_force(cnoid::Vector3::Zero()),
-              off_moment(cnoid::Vector3::Zero()), link_offset_centroid(cnoid::Vector3::Zero()), link_offset_mass(0), force_offset_sum(cnoid::Vector3::Zero()),
-              moment_offset_sum(cnoid::Vector3::Zero()), sensor_offset_calib_counter(0), wait_sem() {
+            : force_offset(cnoid::Vector3::Zero()), moment_offset(cnoid::Vector3::Zero()),
+              off_force(cnoid::Vector3::Zero()), off_moment(cnoid::Vector3::Zero()),
+              link_offset_centroid(cnoid::Vector3::Zero()), link_offset_mass(0),
+              force_offset_sum(cnoid::Vector3::Zero()), moment_offset_sum(cnoid::Vector3::Zero()),
+              sensor_offset_calib_counter(0), wait_sem() {
             sem_init(&wait_sem, 0, 0);
         };
     };

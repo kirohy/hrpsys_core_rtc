@@ -23,36 +23,42 @@ class seqplay {
     void setBaseRpy(const double *i_rpy, double i_tm = 0.0);
     void setBaseAcc(const double *i_acc, double i_tm = 0.0);
     void setWrenches(const double *i_wrenches, double i_tm = 0.0);
-    void playPattern(std::vector<const double *> pos, std::vector<const double *> zmp, std::vector<const double *> rpy, std::vector<double> tm,
-                     const double *qInit, unsigned int len);
+    void playPattern(std::vector<const double *> pos, std::vector<const double *> zmp, std::vector<const double *> rpy,
+                     std::vector<double> tm, const double *qInit, unsigned int len);
     //
     bool addJointGroup(const char *gname, const std::vector<int> &indices);
     bool getJointGroup(const char *gname, std::vector<int> &indices);
     bool removeJointGroup(const char *gname, double time = 2.5);
     bool setJointAnglesOfGroup(const char *gname, const double *i_qRef, const size_t i_qsize, double i_tm = 0.0);
     void clearOfGroup(const char *gname, double i_timeLimit);
-    bool playPatternOfGroup(const char *gname, std::vector<const double *> pos, std::vector<double> tm, const double *qInit, unsigned int len);
+    bool playPatternOfGroup(const char *gname, std::vector<const double *> pos, std::vector<double> tm,
+                            const double *qInit, unsigned int len);
 
     bool resetJointGroup(const char *gname, const double *full);
     //
     bool setJointAnglesSequence(std::vector<const double *> pos, std::vector<double> tm);
-    bool setJointAnglesSequenceOfGroup(const char *gname, std::vector<const double *> pos, std::vector<double> tm, const size_t pos_size);
-    bool setJointAnglesSequenceFull(std::vector<const double *> pos, std::vector<const double *> vel, std::vector<const double *> torques,
-                                    std::vector<const double *> bpos, std::vector<const double *> brpy, std::vector<const double *> bacc,
-                                    std::vector<const double *> zmps, std::vector<const double *> wrenches, std::vector<const double *> optionals,
-                                    std::vector<double> tm);
+    bool setJointAnglesSequenceOfGroup(const char *gname, std::vector<const double *> pos, std::vector<double> tm,
+                                       const size_t pos_size);
+    bool setJointAnglesSequenceFull(std::vector<const double *> pos, std::vector<const double *> vel,
+                                    std::vector<const double *> torques, std::vector<const double *> bpos,
+                                    std::vector<const double *> brpy, std::vector<const double *> bacc,
+                                    std::vector<const double *> zmps, std::vector<const double *> wrenches,
+                                    std::vector<const double *> optionals, std::vector<double> tm);
     bool clearJointAngles();
     bool clearJointAnglesOfGroup(const char *gname);
     //
     void setJointAngle(unsigned int i_rank, double jv, double tm);
     void loadPattern(const char *i_basename, double i_tm);
     void clear(double i_timeLimit = 0);
-    void get(double *o_q, double *o_zmp, double *o_accel, double *o_basePos, double *o_baseRpy, double *o_tq, double *o_wrenches, double *o_optional_data);
-    void go(const double *i_q, const double *i_zmp, const double *i_acc, const double *i_p, const double *i_rpy, const double *i_tq, const double *i_wrenches,
-            const double *i_optional_data, double i_time, bool immediate = true);
-    void go(const double *i_q, const double *i_zmp, const double *i_acc, const double *i_p, const double *i_rpy, const double *i_tq, const double *i_wrenches,
-            const double *i_optional_data, const double *ii_q, const double *ii_zmp, const double *ii_acc, const double *ii_p, const double *ii_rpy,
-            const double *ii_tq, const double *ii_wrenches, const double *ii_optional_data, double i_time, bool immediate = true);
+    void get(double *o_q, double *o_zmp, double *o_accel, double *o_basePos, double *o_baseRpy, double *o_tq,
+             double *o_wrenches, double *o_optional_data);
+    void go(const double *i_q, const double *i_zmp, const double *i_acc, const double *i_p, const double *i_rpy,
+            const double *i_tq, const double *i_wrenches, const double *i_optional_data, double i_time,
+            bool immediate = true);
+    void go(const double *i_q, const double *i_zmp, const double *i_acc, const double *i_p, const double *i_rpy,
+            const double *i_tq, const double *i_wrenches, const double *i_optional_data, const double *ii_q,
+            const double *ii_zmp, const double *ii_acc, const double *ii_p, const double *ii_rpy, const double *ii_tq,
+            const double *ii_wrenches, const double *ii_optional_data, double i_time, bool immediate = true);
     void sync();
     bool setInterpolationMode(interpolator::interpolation_mode i_mode_);
 

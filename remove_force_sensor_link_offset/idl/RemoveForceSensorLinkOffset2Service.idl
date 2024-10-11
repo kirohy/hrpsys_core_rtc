@@ -1,7 +1,3 @@
-/**
- * @file RemoveForceSensorLinkOffsetService.idl
- * @brief Services for removing link offset of force sensors
- */
 module OpenHRP
 {
   interface RemoveForceSensorLinkOffset2Service

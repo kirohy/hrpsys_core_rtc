@@ -11,6 +11,14 @@
 #include <hrpsys/io/iob.h>
 #include <semaphore.h>
 
+enum { RLEG, LLEG };
+enum { FX, FY, FZ, MX, MY, MZ };
+enum { X, Y, Z };
+enum { WX, WY, WZ };
+enum { TOE, HEEL };
+enum { INSIDE, OUTSIDE };
+enum { RL, FB };
+
 class robot : public cnoid::Body {
   public:
     /**

@@ -3,32 +3,30 @@
 #include <robot_hardware/robot.h>
 #include <rtm/CorbaNaming.h>
 
-static const char *robothardware2_spec[] = {"implementation_id", "RobotHardware2", "type_name", "RobotHardware2", "description", "RobotHardware2", "version",
-                                            "1.0.0", "vendor", "JSK", "category", "example", "activity_type", "DataFlowComponent", "max_instance", "1",
-                                            "language", "C++", "lang_type", "compile",
-                                            // Configuration variables
-                                            "conf.default.isDemoMode", "0", "conf.default.fzLimitRatio", "2.0", "conf.default.servoErrorLimit", ",",
-                                            "conf.default.jointAccelerationLimit", "0", "conf.default.servoOnDelay", "0",
+static const char *robothardware2_spec[] = {
+    "implementation_id", "RobotHardware2", "type_name", "RobotHardware2", "description", "RobotHardware2", "version",
+    "1.0.0", "vendor", "JSK", "category", "example", "activity_type", "DataFlowComponent", "max_instance", "1",
+    "language", "C++", "lang_type", "compile",
+    // Configuration variables
+    "conf.default.isDemoMode", "0", "conf.default.fzLimitRatio", "2.0", "conf.default.servoErrorLimit", ",",
+    "conf.default.jointAccelerationLimit", "0", "conf.default.servoOnDelay", "0",
 
-                                            ""};
-// </rtc-template>
+    ""};
 
 RobotHardware2::RobotHardware2(RTC::Manager *manager)
     : RTC::DataFlowComponentBase(manager),
       // <rtc-template block="initializer">
-      m_isDemoMode(0), m_qRefIn("qRef", m_qRef), m_dqRefIn("dqRef", m_dqRef), m_ddqRefIn("ddqRef", m_ddqRef), m_tauRefIn("tauRef", m_tauRef), m_qOut("q", m_q),
-      m_dqOut("dq", m_dq), m_tauOut("tau", m_tau), m_ctauOut("ctau", m_ctau), m_pdtauOut("pdtau", m_pdtau), m_servoStateOut("servoState", m_servoState),
-      m_emergencySignalOut("emergencySignal", m_emergencySignal), m_rstate2Out("rstate2", m_rstate2), m_RobotHardware2ServicePort("RobotHardware2Service"),
-      // </rtc-template>
-      dummy(0) {}
+      m_isDemoMode(0), m_qRefIn("qRef", m_qRef), m_dqRefIn("dqRef", m_dqRef), m_ddqRefIn("ddqRef", m_ddqRef),
+      m_tauRefIn("tauRef", m_tauRef), m_qOut("q", m_q), m_dqOut("dq", m_dq), m_tauOut("tau", m_tau),
+      m_ctauOut("ctau", m_ctau), m_pdtauOut("pdtau", m_pdtau), m_servoStateOut("servoState", m_servoState),
+      m_emergencySignalOut("emergencySignal", m_emergencySignal), m_rstate2Out("rstate2", m_rstate2),
+      m_RobotHardware2ServicePort("RobotHardware2Service"), dummy(0) {}
 
 RobotHardware2::~RobotHardware2() {}
 
 
 RTC::ReturnCode_t RobotHardware2::onInitialize() {
     RTC_INFO_STREAM("onInitialize()");
-    // Registration: InPort/OutPort/Service
-    // <rtc-template block="registration">
 
     addInPort("qRef", m_qRefIn);
     addInPort("dqRef", m_dqRefIn);
@@ -51,8 +49,6 @@ RTC::ReturnCode_t RobotHardware2::onInitialize() {
 
     // Set CORBA Service Ports
     addPort(m_RobotHardware2ServicePort);
-
-    // </rtc-template>
 
     RTC::Properties &prop = this->getProperties();
 
@@ -146,42 +142,6 @@ RTC::ReturnCode_t RobotHardware2::onInitialize() {
     return RTC::RTC_OK;
 }
 
-
-/*
-RTC::ReturnCode_t RobotHardware::onFinalize()
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RobotHardware::onStartup(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RobotHardware::onShutdown(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RobotHardware::onActivated(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RobotHardware::onDeactivated(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
 RTC::ReturnCode_t RobotHardware2::onExecute(RTC::UniqueId ec_id) {
     // RTC_INFO_STREAM("onExecute(" << ec_id << ")");
     RTC::Time tm;
@@ -204,7 +164,7 @@ RTC::ReturnCode_t RobotHardware2::onExecute(RTC::UniqueId ec_id) {
 
     if (m_qRefIn.isNew()) {
         m_qRefIn.read();
-        // std::cout << "RobotHardware: qRef[21] = " << m_qRef.data[21] << std::endl;
+        // RTC_INFO_STREAM("qRef[21] = " << m_qRef.data[21]);
         if (!m_isDemoMode && m_robot->checkJointCommands(m_qRef.data.get_buffer())) {
             m_robot->servo("all", false);
             m_emergencySignal.data = robot::EMG_SERVO_ERROR;
@@ -216,19 +176,19 @@ RTC::ReturnCode_t RobotHardware2::onExecute(RTC::UniqueId ec_id) {
     }
     if (m_dqRefIn.isNew()) {
         m_dqRefIn.read();
-        // std::cout << "RobotHardware: dqRef[21] = " << m_dqRef.data[21] << std::endl;
+        // RTC_INFO_STREAM("dqRef[21] = " << m_dqRef.data[21]);
         // output to iob
         m_robot->writeVelocityCommands(m_dqRef.data.get_buffer());
     }
     if (m_ddqRefIn.isNew()) {
         m_ddqRefIn.read();
-        // std::cout << "RobotHardware: dqRef[21] = " << m_dqRef.data[21] << std::endl;
+        // RTC_INFO_STREAM("ddqRef[21] = " << m_ddqRef.data[21]);
         // output to iob
         m_robot->writeAccelerationCommands(m_ddqRef.data.get_buffer());
     }
     if (m_tauRefIn.isNew()) {
         m_tauRefIn.read();
-        // std::cout << "RobotHardware: tauRef[21] = " << m_tauRef.data[21] << std::endl;
+        // RTC_INFO_STREAM("tauRef[21] = " << m_tauRef.data[21]);
         // output to iob
         m_robot->writeTorqueCommands(m_tauRef.data.get_buffer());
     }
@@ -371,7 +331,8 @@ void RobotHardware2::getStatus2(OpenHRP::RobotHardware2Service::RobotState2 &rst
 #if defined(ROBOT_IOB_VERSION) && ROBOT_IOB_VERSION >= 2
     rstate2.batteries.length(m_robot->numBatteries());
     for (unsigned int i = 0; i < rstate2.batteries.length(); i++) {
-        m_robot->readBatteryState(i, rstate2.batteries[i].voltage, rstate2.batteries[i].current, rstate2.batteries[i].soc);
+        m_robot->readBatteryState(i, rstate2.batteries[i].voltage, rstate2.batteries[i].current,
+                                  rstate2.batteries[i].soc);
     }
     rstate2.temperature.length(m_robot->numThermometers());
     for (unsigned int i = 0; i < rstate2.temperature.length(); i++) {
@@ -379,41 +340,6 @@ void RobotHardware2::getStatus2(OpenHRP::RobotHardware2Service::RobotState2 &rst
     }
 #endif
 }
-
-/*
-RTC::ReturnCode_t RobotHardware::onAborting(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RobotHardware::onError(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RobotHardware::onReset(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RobotHardware::onStateUpdate(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
-
-/*
-RTC::ReturnCode_t RobotHardware::onRateChanged(RTC::UniqueId ec_id)
-{
-  return RTC::RTC_OK;
-}
-*/
 
 extern "C" {
 void RobotHardware2Init(RTC::Manager *manager) {

@@ -52,7 +52,8 @@ void interpolator::clear() {
 }
 
 // 1dof interpolator
-void interpolator::hoffarbib(double &remain_t_, double a0, double a1, double a2, double a3, double a4, double a5, double &xx, double &vv, double &aa) {
+void interpolator::hoffarbib(double &remain_t_, double a0, double a1, double a2, double a3, double a4, double a5,
+                             double &xx, double &vv, double &aa) {
 #define EPS 1e-6
     if (remain_t_ > dt + EPS) {
         remain_t_ -= dt;
@@ -93,8 +94,8 @@ double interpolator::calc_interpolation_time(const double *newg) {
     remain_t_ = max_diff / default_avg_vel;
 #define MIN_INTERPOLATION_TIME (1.0)
     if (remain_t_ < MIN_INTERPOLATION_TIME) {
-        std::cerr << "[interpolator][" << name << "] MIN_INTERPOLATION_TIME violated!! Limit remain_t (" << remain_t << ") by MIN_INTERPOLATION_TIME ("
-                  << MIN_INTERPOLATION_TIME << ")."
+        std::cerr << "[interpolator][" << name << "] MIN_INTERPOLATION_TIME violated!! Limit remain_t (" << remain_t
+                  << ") by MIN_INTERPOLATION_TIME (" << MIN_INTERPOLATION_TIME << ")."
                   << "(max_diff = " << max_diff << ", default_avg_vel = " << default_avg_vel << ")" << std::endl;
         ;
         remain_t_ = MIN_INTERPOLATION_TIME;
@@ -125,7 +126,8 @@ void interpolator::setGoal(const double *newg, const double *newv, double time, 
     for (int i = 0; i < dim; i++) {
         switch (imode) {
         case HOFFARBIB:
-            A = (gx[i] - (x[i] + v[i] * target_t + (a[i] / 2.0) * target_t * target_t)) / (target_t * target_t * target_t);
+            A = (gx[i] - (x[i] + v[i] * target_t + (a[i] / 2.0) * target_t * target_t)) /
+                (target_t * target_t * target_t);
             B = (gv[i] - (v[i] + a[i] * target_t)) / (target_t * target_t);
             C = (ga[i] - a[i]) / target_t;
 
@@ -140,11 +142,14 @@ void interpolator::setGoal(const double *newg, const double *newv, double time, 
             a0[i] = x[i];
             a1[i] = v[i];
             a2[i] = 0.5 * a[i];
-            a3[i] = (-20 * x[i] + 20 * gx[i] - 3 * a[i] * target_t * target_t + ga[i] * target_t * target_t - 12 * v[i] * target_t - 8 * gv[i] * target_t) /
+            a3[i] = (-20 * x[i] + 20 * gx[i] - 3 * a[i] * target_t * target_t + ga[i] * target_t * target_t -
+                     12 * v[i] * target_t - 8 * gv[i] * target_t) /
                     (2 * target_t * target_t * target_t);
-            a4[i] = (30 * x[i] - 30 * gx[i] + 3 * a[i] * target_t * target_t - 2 * ga[i] * target_t * target_t + 16 * v[i] * target_t + 14 * gv[i] * target_t) /
+            a4[i] = (30 * x[i] - 30 * gx[i] + 3 * a[i] * target_t * target_t - 2 * ga[i] * target_t * target_t +
+                     16 * v[i] * target_t + 14 * gv[i] * target_t) /
                     (2 * target_t * target_t * target_t * target_t);
-            a5[i] = (-12 * x[i] + 12 * gx[i] - a[i] * target_t * target_t + ga[i] * target_t * target_t - 6 * v[i] * target_t - 6 * gv[i] * target_t) /
+            a5[i] = (-12 * x[i] + 12 * gx[i] - a[i] * target_t * target_t + ga[i] * target_t * target_t -
+                     6 * v[i] * target_t - 6 * gv[i] * target_t) /
                     (2 * target_t * target_t * target_t * target_t * target_t);
             break;
         case CUBICSPLINE:
@@ -192,7 +197,8 @@ void interpolator::go(const double *newg, const double *newv, double time, bool 
     if (immediate) sync();
 }
 
-void interpolator::load(const char *fname, double time_to_start, double scale, bool immediate, size_t offset1, size_t offset2) {
+void interpolator::load(const char *fname, double time_to_start, double scale, bool immediate, size_t offset1,
+                        size_t offset2) {
     std::ifstream strm(fname);
     if (!strm.is_open()) {
         std::cerr << "[interpolator " << name << "] file not found(" << fname << ")" << std::endl;
@@ -224,7 +230,8 @@ void interpolator::load(const char *fname, double time_to_start, double scale, b
     if (immediate) sync();
 }
 
-void interpolator::load(std::string fname, double time_to_start, double scale, bool immediate, size_t offset1, size_t offset2) {
+void interpolator::load(std::string fname, double time_to_start, double scale, bool immediate, size_t offset1,
+                        size_t offset2) {
     load(fname.c_str(), time_to_start, scale, immediate, offset1, offset2);
 }
 
@@ -320,15 +327,18 @@ void interpolator::get(double *x_, double *v_, double *a_, bool popp) {
     if (length != 0) {
         double *&vs = q.front();
         if (vs == NULL) {
-            std::cerr << "[interpolator " << name << "] interpolator::get vs = NULL, q.size() = " << q.size() << ", length = " << length << std::endl;
+            std::cerr << "[interpolator " << name << "] interpolator::get vs = NULL, q.size() = " << q.size()
+                      << ", length = " << length << std::endl;
         }
         double *&dvs = dq.front();
         if (dvs == NULL) {
-            std::cerr << "[interpolator " << name << "] interpolator::get dvs = NULL, dq.size() = " << dq.size() << ", length = " << length << std::endl;
+            std::cerr << "[interpolator " << name << "] interpolator::get dvs = NULL, dq.size() = " << dq.size()
+                      << ", length = " << length << std::endl;
         }
         double *&ddvs = ddq.front();
         if (ddvs == NULL) {
-            std::cerr << "[interpolator " << name << "] interpolator::get ddvs = NULL, ddq.size() = " << ddq.size() << ", length = " << length << std::endl;
+            std::cerr << "[interpolator " << name << "] interpolator::get ddvs = NULL, ddq.size() = " << ddq.size()
+                      << ", length = " << length << std::endl;
         }
         std::memcpy(x_, vs, sizeof(double) * dim);
         if (v_ != NULL) std::memcpy(v_, dvs, sizeof(double) * dim);

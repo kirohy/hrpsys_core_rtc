@@ -1,7 +1,3 @@
-/**
- * @file SequencePlayerService.idl
- * @brief Services for the sequence player interface
- */
 module OpenHRP
 {
   typedef sequence<double> dSequence;
