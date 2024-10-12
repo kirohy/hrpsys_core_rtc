@@ -1,5 +1,8 @@
 # hrpsys_core_rtc
-hrpsys powered by choreonoid-2.1
+hrpsys powered by choreonoid-2
+
+## data_logger
+- original: https://github.com/fkanehiro/hrpsys-base/tree/master/rtc/DataLogger
 
 ## kalman_filter
 - original: https://github.com/fkanehiro/hrpsys-base/tree/master/rtc/KalmanFilter
