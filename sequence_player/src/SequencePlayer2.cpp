@@ -4,6 +4,10 @@
 #include <rtm/CorbaNaming.h>
 #include <sequence_player/SequencePlayer2.h>
 
+using sequence_player::bSequence;
+using sequence_player::dSequence;
+using sequence_player::dSequenceSequence;
+
 static const char *sequenceplayer2_spec[] = {"implementation_id", "SequencePlayer2", "type_name", "SequencePlayer2",
                                              "description", "sequence player component", "version", "1.0.0", "vendor",
                                              "JSK", "category", "example", "activity_type", "DataFlowComponent",
@@ -344,8 +348,8 @@ bool SequencePlayer2::setJointAngles(const double *angles, const bool *mask, dou
     return true;
 }
 
-bool SequencePlayer2::setJointAnglesSequence(const OpenHRP::dSequenceSequence angless, const OpenHRP::bSequence &mask,
-                                             const OpenHRP::dSequence &times) {
+bool SequencePlayer2::setJointAnglesSequence(const dSequenceSequence angless, const bSequence &mask,
+                                             const dSequence &times) {
     if (m_debugLevel > 0) { RTC_INFO_STREAM(__PRETTY_FUNCTION__); }
     std::lock_guard<std::mutex> guard(m_mutex);
 
@@ -378,8 +382,8 @@ bool SequencePlayer2::clearJointAngles() {
     return m_seq->clearJointAngles();
 }
 
-bool SequencePlayer2::setJointAnglesSequenceOfGroup(const char *gname, const OpenHRP::dSequenceSequence angless,
-                                                    const OpenHRP::dSequence &times) {
+bool SequencePlayer2::setJointAnglesSequenceOfGroup(const char *gname, const dSequenceSequence angless,
+                                                    const dSequence &times) {
     if (m_debugLevel > 0) { RTC_INFO_STREAM(__PRETTY_FUNCTION__); }
     std::lock_guard<std::mutex> guard(m_mutex);
 
@@ -407,12 +411,11 @@ bool SequencePlayer2::clearJointAnglesOfGroup(const char *gname) {
     return m_seq->clearJointAnglesOfGroup(gname);
 }
 
-bool SequencePlayer2::setJointAnglesSequenceFull(
-    const OpenHRP::dSequenceSequence i_jvss, const OpenHRP::dSequenceSequence i_vels,
-    const OpenHRP::dSequenceSequence i_torques, const OpenHRP::dSequenceSequence i_poss,
-    const OpenHRP::dSequenceSequence i_rpys, const OpenHRP::dSequenceSequence i_accs,
-    const OpenHRP::dSequenceSequence i_zmps, const OpenHRP::dSequenceSequence i_wrenches,
-    const OpenHRP::dSequenceSequence i_optionals, const dSequence i_tms) {
+bool SequencePlayer2::setJointAnglesSequenceFull(const dSequenceSequence i_jvss, const dSequenceSequence i_vels,
+                                                 const dSequenceSequence i_torques, const dSequenceSequence i_poss,
+                                                 const dSequenceSequence i_rpys, const dSequenceSequence i_accs,
+                                                 const dSequenceSequence i_zmps, const dSequenceSequence i_wrenches,
+                                                 const dSequenceSequence i_optionals, const dSequence i_tms) {
     if (m_debugLevel > 0) { RTC_INFO_STREAM(__PRETTY_FUNCTION__); }
     std::lock_guard<std::mutex> guard(m_mutex);
 
@@ -699,13 +702,13 @@ void SequencePlayer2::playPattern(const dSequenceSequence &pos, const dSequenceS
                               pos.length() > 0 ? pos[0].length() : 0);
 }
 
-bool SequencePlayer2::setInterpolationMode(OpenHRP::SequencePlayer2Service::interpolationMode i_mode_) {
+bool SequencePlayer2::setInterpolationMode(sequence_player::SequencePlayer2Service::interpolationMode i_mode_) {
     if (m_debugLevel > 0) { RTC_INFO_STREAM(__PRETTY_FUNCTION__); }
     std::lock_guard<std::mutex> guard(m_mutex);
     interpolator::interpolation_mode new_mode;
-    if (i_mode_ == OpenHRP::SequencePlayer2Service::LINEAR) {
+    if (i_mode_ == sequence_player::SequencePlayer2Service::LINEAR) {
         new_mode = interpolator::LINEAR;
-    } else if (i_mode_ == OpenHRP::SequencePlayer2Service::HOFFARBIB) {
+    } else if (i_mode_ == sequence_player::SequencePlayer2Service::HOFFARBIB) {
         new_mode = interpolator::HOFFARBIB;
     } else {
         return false;
@@ -713,7 +716,8 @@ bool SequencePlayer2::setInterpolationMode(OpenHRP::SequencePlayer2Service::inte
     return m_seq->setInterpolationMode(new_mode);
 }
 
-bool SequencePlayer2::addJointGroup(const char *gname, const OpenHRP::SequencePlayer2Service::StrSequence &jnames) {
+bool SequencePlayer2::addJointGroup(const char *gname,
+                                    const sequence_player::SequencePlayer2Service::StrSequence &jnames) {
     RTC_INFO_STREAM("[addJointGroup] group name = " << gname);
     if (m_debugLevel > 0) { RTC_INFO_STREAM(__PRETTY_FUNCTION__); }
     if (!waitInterpolationOfGroup(gname)) return false;

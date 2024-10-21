@@ -4,7 +4,7 @@
 #include <data_logger/idl/DataLogger2Service.hh>
 
 class DataLogger2;
-class DataLogger2Service_impl : public virtual POA_OpenHRP::DataLogger2Service,
+class DataLogger2Service_impl : public virtual POA_data_logger::DataLogger2Service,
                                 public virtual PortableServer::RefCountServantBase {
   public:
     DataLogger2Service_impl();

@@ -31,7 +31,7 @@ class StateHolder2 : public RTC::DataFlowComponentBase {
     virtual RTC::ReturnCode_t onExecute(RTC::UniqueId ec_id);
 
     void goActual();
-    void getCommand(OpenHRP::StateHolder2Service::Command &com);
+    void getCommand(state_holder::StateHolder2Service::Command &com);
     void wait(CORBA::Double tm);
 
   protected:

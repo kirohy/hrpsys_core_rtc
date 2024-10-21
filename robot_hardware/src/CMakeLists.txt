@@ -36,7 +36,6 @@ target_link_libraries(RobotHardware2
   ${CHOREONOID_BODY_LIBRARIES}
   ${openrtm_aist_LIBRARIES}
   ${${PROJECT_NAME}_IDLLIBRARY_DIRS}
-  HRPDataTypesSkel HRPDataTypesStub
 )
 
 set_target_properties(RobotHardware2 PROPERTIES PREFIX "")

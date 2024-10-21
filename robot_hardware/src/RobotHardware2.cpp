@@ -232,15 +232,15 @@ RTC::ReturnCode_t RobotHardware2::onExecute(RTC::UniqueId ec_id) {
         m_servoState.data[i].length(len);
         int status = 0, v;
         v          = m_robot->readCalibState(i);
-        status |= v << OpenHRP::RobotHardware2Service::CALIB_STATE_SHIFT;
+        status |= v << robot_hardware::RobotHardware2Service::CALIB_STATE_SHIFT;
         v = m_robot->readPowerState(i);
-        status |= v << OpenHRP::RobotHardware2Service::POWER_STATE_SHIFT;
+        status |= v << robot_hardware::RobotHardware2Service::POWER_STATE_SHIFT;
         v = m_robot->readServoState(i);
-        status |= v << OpenHRP::RobotHardware2Service::SERVO_STATE_SHIFT;
+        status |= v << robot_hardware::RobotHardware2Service::SERVO_STATE_SHIFT;
         v = m_robot->readServoAlarm(i);
-        status |= v << OpenHRP::RobotHardware2Service::SERVO_ALARM_SHIFT;
+        status |= v << robot_hardware::RobotHardware2Service::SERVO_ALARM_SHIFT;
         v = m_robot->readDriverTemperature(i);
-        status |= v << OpenHRP::RobotHardware2Service::DRIVER_TEMP_SHIFT;
+        status |= v << robot_hardware::RobotHardware2Service::DRIVER_TEMP_SHIFT;
         m_servoState.data[i][0] = status;
         m_robot->readExtraServoState(i, (int *)(m_servoState.data[i].get_buffer() + 1));
     }
@@ -292,15 +292,15 @@ template <class T> void getStatus(std::shared_ptr<robot> robot, T &rstate) {
         rstate.servoState[i].length(len);
         status = 0;
         v      = robot->readCalibState(i);
-        status |= v << OpenHRP::RobotHardware2Service::CALIB_STATE_SHIFT;
+        status |= v << robot_hardware::RobotHardware2Service::CALIB_STATE_SHIFT;
         v = robot->readPowerState(i);
-        status |= v << OpenHRP::RobotHardware2Service::POWER_STATE_SHIFT;
+        status |= v << robot_hardware::RobotHardware2Service::POWER_STATE_SHIFT;
         v = robot->readServoState(i);
-        status |= v << OpenHRP::RobotHardware2Service::SERVO_STATE_SHIFT;
+        status |= v << robot_hardware::RobotHardware2Service::SERVO_STATE_SHIFT;
         v = robot->readServoAlarm(i);
-        status |= v << OpenHRP::RobotHardware2Service::SERVO_ALARM_SHIFT;
+        status |= v << robot_hardware::RobotHardware2Service::SERVO_ALARM_SHIFT;
         v = robot->readDriverTemperature(i);
-        status |= v << OpenHRP::RobotHardware2Service::DRIVER_TEMP_SHIFT;
+        status |= v << robot_hardware::RobotHardware2Service::DRIVER_TEMP_SHIFT;
         rstate.servoState[i][0] = status;
         robot->readExtraServoState(i, (int *)(rstate.servoState[i].get_buffer() + 1));
     }
@@ -326,7 +326,7 @@ template <class T> void getStatus(std::shared_ptr<robot> robot, T &rstate) {
     robot->readPowerStatus(rstate.voltage, rstate.current);
 }
 
-void RobotHardware2::getStatus2(OpenHRP::RobotHardware2Service::RobotState2 &rstate2) {
+void RobotHardware2::getStatus2(robot_hardware::RobotHardware2Service::RobotState2 &rstate2) {
     getStatus(m_robot, rstate2);
 #if defined(ROBOT_IOB_VERSION) && ROBOT_IOB_VERSION >= 2
     rstate2.batteries.length(m_robot->numBatteries());

@@ -32,8 +32,8 @@ class KalmanFilter2 : public RTC::DataFlowComponentBase {
     virtual RTC::ReturnCode_t onDeactivated(RTC::UniqueId ec_id);
     virtual RTC::ReturnCode_t onExecute(RTC::UniqueId ec_id);
 
-    bool setKalmanFilterParam(const OpenHRP::KalmanFilter2Service::KalmanFilterParam &i_param);
-    bool getKalmanFilterParam(OpenHRP::KalmanFilter2Service::KalmanFilterParam &i_param);
+    bool setKalmanFilterParam(const kalman_filter::KalmanFilter2Service::KalmanFilterParam &i_param);
+    bool getKalmanFilterParam(kalman_filter::KalmanFilter2Service::KalmanFilterParam &i_param);
     bool resetKalmanFilterState();
 
   protected:
@@ -70,7 +70,7 @@ class KalmanFilter2 : public RTC::DataFlowComponentBase {
     cnoid::Vector3 acc_offset;
     unsigned int m_debugLevel;
     int dummy, loop;
-    OpenHRP::KalmanFilter2Service::KFAlgorithm kf_algorithm;
+    kalman_filter::KalmanFilter2Service::KFAlgorithm kf_algorithm;
 };
 
 

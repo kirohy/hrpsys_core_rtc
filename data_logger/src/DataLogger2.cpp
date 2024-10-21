@@ -89,21 +89,21 @@ template <class T> std::ostream &operator<<(std::ostream &os, const _CORBA_Unbou
     return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const OpenHRP::RobotHardware2Service::DblSequence6 &data) {
+std::ostream &operator<<(std::ostream &os, const robot_hardware::RobotHardware2Service::DblSequence6 &data) {
     for (unsigned int j = 0; j < data.length(); j++) {
         os << data[j] << " ";
     }
     return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const OpenHRP::RobotHardware2Service::DblSequence3 &data) {
+std::ostream &operator<<(std::ostream &os, const robot_hardware::RobotHardware2Service::DblSequence3 &data) {
     for (unsigned int j = 0; j < data.length(); j++) {
         os << data[j] << " ";
     }
     return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const OpenHRP::RobotHardware2Service::BatteryState &data) {
+std::ostream &operator<<(std::ostream &os, const robot_hardware::RobotHardware2Service::BatteryState &data) {
     os << data.voltage << " " << data.current << " " << data.soc << " ";
     return os;
 }
@@ -122,7 +122,8 @@ void printData(std::ostream &os, double data, unsigned int precision = 0) {
     LOG_UNSET_PRECISION(os);
 }
 
-void printData(std::ostream &os, const OpenHRP::RobotHardware2Service::RobotState2 &data, unsigned int precision = 0) {
+void printData(std::ostream &os, const robot_hardware::RobotHardware2Service::RobotState2 &data,
+               unsigned int precision = 0) {
     printData(os, data.angle, precision);
     printData(os, data.command, precision);
     printData(os, data.torque, precision);
@@ -281,8 +282,8 @@ bool DataLogger2::add(const char *i_type, const char *i_name) {
             return false;
         }
     } else if (strcmp(i_type, "TimedLongSeqSeq") == 0) {
-        LoggerPort<OpenHRP::TimedLongSeqSeq> *lp = new LoggerPort<OpenHRP::TimedLongSeqSeq>(i_name);
-        new_port                                 = lp;
+        LoggerPort<robot_hardware::TimedLongSeqSeq> *lp = new LoggerPort<robot_hardware::TimedLongSeqSeq>(i_name);
+        new_port                                        = lp;
         if (!addInPort(i_name, lp->port())) {
             resumeLogging();
             return false;
@@ -344,8 +345,8 @@ bool DataLogger2::add(const char *i_type, const char *i_name) {
             return false;
         }
     } else if (strcmp(i_type, "TimedRobotState2") == 0) {
-        LoggerPort<OpenHRP::RobotHardware2Service::TimedRobotState2> *lp =
-            new LoggerPort<OpenHRP::RobotHardware2Service::TimedRobotState2>(i_name);
+        LoggerPort<robot_hardware::RobotHardware2Service::TimedRobotState2> *lp =
+            new LoggerPort<robot_hardware::RobotHardware2Service::TimedRobotState2>(i_name);
         new_port = lp;
         if (!addInPort(i_name, lp->port())) {
             resumeLogging();

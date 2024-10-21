@@ -3,6 +3,10 @@
 #include <sequence_player/SequencePlayer2.h>
 #include <sequence_player/SequencePlayer2Service_impl.h>
 
+using sequence_player::bSequence;
+using sequence_player::dSequence;
+using sequence_player::dSequenceSequence;
+
 SequencePlayer2Service_impl::SequencePlayer2Service_impl() : m_player(NULL) {}
 
 SequencePlayer2Service_impl::~SequencePlayer2Service_impl() {}
@@ -36,7 +40,7 @@ CORBA::Boolean SequencePlayer2Service_impl::setJointAnglesWithMask(const dSequen
 
 CORBA::Boolean SequencePlayer2Service_impl::setJointAnglesSequence(const dSequenceSequence &jvss,
                                                                    const dSequence &tms) {
-    const OpenHRP::bSequence mask;
+    const bSequence mask;
     return setJointAnglesSequenceWithMask(jvss, mask, tms);
 }
 
@@ -274,7 +278,7 @@ CORBA::Boolean SequencePlayer2Service_impl::clearOfGroup(const char *gname, CORB
 void SequencePlayer2Service_impl::clearNoWait() { m_player->setClearFlag(); }
 
 CORBA::Boolean
-SequencePlayer2Service_impl::setInterpolationMode(OpenHRP::SequencePlayer2Service::interpolationMode i_mode_) {
+SequencePlayer2Service_impl::setInterpolationMode(sequence_player::SequencePlayer2Service::interpolationMode i_mode_) {
     return m_player->setInterpolationMode(i_mode_);
 }
 
@@ -290,8 +294,9 @@ void SequencePlayer2Service_impl::playPattern(const dSequenceSequence &pos, cons
     m_player->playPattern(pos, rpy, zmp, tm);
 }
 
-CORBA::Boolean SequencePlayer2Service_impl::addJointGroup(const char *gname,
-                                                          const OpenHRP::SequencePlayer2Service::StrSequence &jnames) {
+CORBA::Boolean
+SequencePlayer2Service_impl::addJointGroup(const char *gname,
+                                           const sequence_player::SequencePlayer2Service::StrSequence &jnames) {
     return m_player->addJointGroup(gname, jnames);
 }
 

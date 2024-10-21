@@ -3,11 +3,9 @@
 
 #include <state_holder/idl/TimeKeeper2Service.hh>
 
-using namespace OpenHRP;
-
 class StateHolder2;
 
-class TimeKeeper2Service_impl : public virtual POA_OpenHRP::TimeKeeper2Service,
+class TimeKeeper2Service_impl : public virtual POA_state_holder::TimeKeeper2Service,
                                 public virtual PortableServer::RefCountServantBase {
   public:
     TimeKeeper2Service_impl();

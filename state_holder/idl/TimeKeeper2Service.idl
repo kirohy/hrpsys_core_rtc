@@ -1,11 +1,14 @@
-module OpenHRP
-{
-  interface TimeKeeper2Service
-  {
-    /**
-       @brief wait for \em tm [s]
-       @param tm time to sleep[s]
-     */
-    void sleep(in double tm);
-  };
+#ifndef TimeKeeper2Service_idl
+#define TimeKeeper2Service_idl
+
+module state_holder {
+    interface TimeKeeper2Service {
+        /**
+           @brief wait for \em tm [s]
+           @param tm time to sleep[s]
+         */
+        void sleep(in double tm);
+    };
 };
+
+#endif // TimeKeeper2Service_idl

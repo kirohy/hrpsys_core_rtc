@@ -216,7 +216,8 @@ void RemoveForceSensorLinkOffset2::printForceMomentOffsetParam(const std::string
 };
 
 bool RemoveForceSensorLinkOffset2::setForceMomentOffsetParam(
-    const std::string &i_name_, const OpenHRP::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_) {
+    const std::string &i_name_,
+    const remove_force_sensor_link_offset::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_) {
     RTC_INFO_STREAM("setForceMomentOffsetParam [" << i_name_ << "]");
     if (m_forcemoment_offset_param.find(i_name_) != m_forcemoment_offset_param.end()) {
         memcpy(m_forcemoment_offset_param[i_name_].force_offset.data(), i_param_.force_offset.get_buffer(),
@@ -235,7 +236,8 @@ bool RemoveForceSensorLinkOffset2::setForceMomentOffsetParam(
 }
 
 bool RemoveForceSensorLinkOffset2::getForceMomentOffsetParam(
-    const std::string &i_name_, OpenHRP::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_) {
+    const std::string &i_name_,
+    remove_force_sensor_link_offset::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_) {
     if (m_forcemoment_offset_param.find(i_name_) != m_forcemoment_offset_param.end()) {
         // std::cerr << "OK " << i_name_ << " in getForceMomentOffsetParam" << std::endl;
         memcpy(i_param_.force_offset.get_buffer(), m_forcemoment_offset_param[i_name_].force_offset.data(),
@@ -307,7 +309,7 @@ bool RemoveForceSensorLinkOffset2::dumpForceMomentOffsetParams(const std::string
 };
 
 bool RemoveForceSensorLinkOffset2::removeForceSensorOffset(
-    const ::OpenHRP::RemoveForceSensorLinkOffset2Service::StrSequence &names, const double tm) {
+    const ::remove_force_sensor_link_offset::RemoveForceSensorLinkOffset2Service::StrSequence &names, const double tm) {
     RTC_INFO_STREAM("removeForceSensorOffset...");
 
     // Check argument validity

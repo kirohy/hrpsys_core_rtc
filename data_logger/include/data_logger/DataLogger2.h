@@ -5,7 +5,6 @@
 #include <iomanip>
 #include <mutex>
 
-#include <hrpsys/idl/HRPDataTypes.hh>
 #include <rtm/CorbaPort.h>
 #include <rtm/DataFlowComponentBase.h>
 #include <rtm/DataInPort.h>

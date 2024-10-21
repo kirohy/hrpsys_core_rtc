@@ -5,14 +5,14 @@
 
 class KalmanFilter2;
 
-class KalmanFilter2Service_impl : public virtual POA_OpenHRP::KalmanFilter2Service,
+class KalmanFilter2Service_impl : public virtual POA_kalman_filter::KalmanFilter2Service,
                                   public virtual PortableServer::RefCountServantBase {
   public:
     KalmanFilter2Service_impl();
     virtual ~KalmanFilter2Service_impl();
 
-    bool setKalmanFilterParam(const OpenHRP::KalmanFilter2Service::KalmanFilterParam &i_param);
-    bool getKalmanFilterParam(OpenHRP::KalmanFilter2Service::KalmanFilterParam &i_param);
+    bool setKalmanFilterParam(const kalman_filter::KalmanFilter2Service::KalmanFilterParam &i_param);
+    bool getKalmanFilterParam(kalman_filter::KalmanFilter2Service::KalmanFilterParam &i_param);
     bool resetKalmanFilterState();
 
     void kalman(KalmanFilter2 *i_kalman);

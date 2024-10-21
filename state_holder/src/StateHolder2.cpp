@@ -279,7 +279,7 @@ void StateHolder2::goActual() {
     sem_wait(&m_waitSem);
 }
 
-void StateHolder2::getCommand(StateHolder2Service::Command &com) {
+void StateHolder2::getCommand(state_holder::StateHolder2Service::Command &com) {
     com.jointRefs.length(m_q.data.length());
     memcpy(com.jointRefs.get_buffer(), m_q.data.get_buffer(), sizeof(double) * m_q.data.length());
     com.baseTransform.length(12);

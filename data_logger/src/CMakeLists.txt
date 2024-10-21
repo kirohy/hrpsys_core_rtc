@@ -30,7 +30,6 @@ target_link_libraries(DataLogger2
   ${catkin_LIBRARIES}
   ${openrtm_aist_LIBRARIES}
   ${${PROJECT_NAME}_IDLLIBRARY_DIRS}
-  HRPDataTypesSkel HRPDataTypesStub
   pointcloudSkel pointcloudStub
 )
 

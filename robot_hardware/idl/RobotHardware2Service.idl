@@ -1,291 +1,296 @@
-#include "BasicDataType.idl"
+#ifndef RobotHardware2Service_idl
+#define RobotHardware2Service_idl
 
-module OpenHRP
-{
-  interface RobotHardware2Service
-  {
-    const unsigned long CALIB_STATE_MASK = 0x00000001;
-    const unsigned long CALIB_STATE_SHIFT = 0;
-    const unsigned long SERVO_STATE_MASK = 0x00000002;
-    const unsigned long SERVO_STATE_SHIFT = 1;
-    const unsigned long POWER_STATE_MASK = 0x00000004;
-    const unsigned long POWER_STATE_SHIFT = 2;
-    const unsigned long SERVO_ALARM_MASK = 0x0007fff8;
-    const unsigned long SERVO_ALARM_SHIFT = 3;
-    const unsigned long DRIVER_TEMP_MASK = 0xff000000;
-    const unsigned long DRIVER_TEMP_SHIFT = 24;
+#include "ExtendedDataTypes.idl"
 
-    typedef sequence<octet>  OctSequence;
-    typedef sequence<double> DblSequence;
-    typedef sequence<long>   LongSequence;
-    typedef sequence<string> StrSequence;
-    typedef sequence<LongSequence>  LongSequenceSequence;
-
-    typedef double DblArray3[3];
-    typedef double DblArray6[6];
-
-    typedef sequence<double, 3> DblSequence3;
-    typedef sequence<double, 6> DblSequence6;
-
-    /**
-     * @brief status of the robot
-     */
-    struct RobotState
-    {
-      DblSequence		angle;  ///< current joint angles[rad]
-      DblSequence		command;///< reference joint angles[rad]
-      DblSequence		torque; ///< joint torques[Nm]
-      /**
-       * @brief servo statuses(32bit+extra states)
-       * 
-       * 0: calib status ( 1 => done )\n 
-       * 1: servo status ( 1 => on )\n
-       * 2: power status ( 1 => supplied )\n
-       * 3-18: servo alarms (see @ref iob.h)\n
-       * 19-23: unused
-       * 24-31: driver temperature (deg)
-       */
-      LongSequenceSequence		servoState;
-      
-      sequence<DblSequence6>	force;    ///< forces[N] and torques[Nm]
-      sequence<DblSequence3>	rateGyro; ///< angular velocities[rad/s]
-      sequence<DblSequence3>	accel;    ///< accelerations[m/(s^2)]
-      double			voltage;  ///< voltage of power supply[V]
-      double			current;  ///< current[A] 
+module robot_hardware {
+    struct TimedLongSeqSeq {
+        RTC::Time tm;
+        sequence<sequence<long> > data;
     };
 
-    /**
-     * @brief get status of the robot
-     * @param rs status of the robot
-     */
-    void getStatus(out RobotState rs);
+    interface RobotHardware2Service {
+        const unsigned long CALIB_STATE_MASK  = 0x00000001;
+        const unsigned long CALIB_STATE_SHIFT = 0;
+        const unsigned long SERVO_STATE_MASK  = 0x00000002;
+        const unsigned long SERVO_STATE_SHIFT = 1;
+        const unsigned long POWER_STATE_MASK  = 0x00000004;
+        const unsigned long POWER_STATE_SHIFT = 2;
+        const unsigned long SERVO_ALARM_MASK  = 0x0007fff8;
+        const unsigned long SERVO_ALARM_SHIFT = 3;
+        const unsigned long DRIVER_TEMP_MASK  = 0xff000000;
+        const unsigned long DRIVER_TEMP_SHIFT = 24;
 
-    enum SwitchStatus {SWITCH_ON, SWITCH_OFF};
+        typedef sequence<octet> OctSequence;
+        typedef sequence<double> DblSequence;
+        typedef sequence<long> LongSequence;
+        typedef sequence<string> StrSequence;
+        typedef sequence<LongSequence> LongSequenceSequence;
 
-    /**
-     * @brief turn on/off power supply for motor driver
-     * @param name joint name, part name or "all"
-     * @param _ss SWITCH_ON or SWITCH_OFF
-     * @retval true if turned on/off successfully
-     * @retval false otherwise
-     */
-    boolean power(in string name, in SwitchStatus _ss);
+        typedef double DblArray3[3];
+        typedef double DblArray6[6];
 
-    /**
-     * @brief servo on/off
-     * @param name joint name, part name or "all"
-     * @param _ss SWITCH_ON or SWITCH_OFF
-     * @retval true if servo on/off successfully
-     * @retval false otherwise
-     */
-    boolean servo(in string name, in SwitchStatus _ss);
+        typedef sequence<double, 3> DblSequence3;
+        typedef sequence<double, 6> DblSequence6;
 
-    /**
-     * @brief set the parcentage to the default servo gain
-     * @param name joint name, part name or "all"
-     * @param percentage to joint servo gain[0-100]
-     */
-    void setServoGainPercentage(in string name, in double percentage);
+        /**
+         * @brief status of the robot
+         */
+        struct RobotState {
+            DblSequence angle;   ///< current joint angles[rad]
+            DblSequence command; ///< reference joint angles[rad]
+            DblSequence torque;  ///< joint torques[Nm]
+            /**
+             * @brief servo statuses(32bit+extra states)
+             *
+             * 0: calib status ( 1 => done )\n
+             * 1: servo status ( 1 => on )\n
+             * 2: power status ( 1 => supplied )\n
+             * 3-18: servo alarms (see @ref iob.h)\n
+             * 19-23: unused
+             * 24-31: driver temperature (deg)
+             */
+            LongSequenceSequence servoState;
 
-    /**
-     * @brief set the parcentage to the default servo Pgain
-     * @param name joint name, part name or "all"
-     * @param percentage to joint servo gain[0-100]
-     */
-    void setServoPGainPercentage(in string name, in double percentage);
+            sequence<DblSequence6> force;    ///< forces[N] and torques[Nm]
+            sequence<DblSequence3> rateGyro; ///< angular velocities[rad/s]
+            sequence<DblSequence3> accel;    ///< accelerations[m/(s^2)]
+            double voltage;                  ///< voltage of power supply[V]
+            double current;                  ///< current[A]
+        };
 
-    /**
-     * @brief set the parcentage to the default servo Dgain
-     * @param name joint name, part name or "all"
-     * @param percentage to joint servo gain[0-100]
-     */
-    void setServoDGainPercentage(in string name, in double percentage);
+        /**
+         * @brief get status of the robot
+         * @param rs status of the robot
+         */
+        void getStatus(out RobotState rs);
 
-    /**
-     * @brief set the parcentage to the default servo Pgain with traisition time
-     * @param name joint name, part name or "all"
-     * @param percentage to joint servo gain[0-100]
-     * @param length of time [s] required to change gain
-     */
-    void setServoPGainPercentageWithTime(in string name, in double percentage, in double time);
+        enum SwitchStatus { SWITCH_ON, SWITCH_OFF };
 
-    /**
-     * @brief set the parcentage to the default servo Dgain with transition time
-     * @param name joint name, part name or "all"
-     * @param percentage to joint servo gain[0-100]
-     * @param length of time [s] required to change gain
-     */
-    void setServoDGainPercentageWithTime(in string name, in double percentage, in double time);
+        /**
+         * @brief turn on/off power supply for motor driver
+         * @param name joint name, part name or "all"
+         * @param _ss SWITCH_ON or SWITCH_OFF
+         * @retval true if turned on/off successfully
+         * @retval false otherwise
+         */
+        boolean power(in string name, in SwitchStatus _ss);
 
-    /**
-     * @brief set the maximum joint servo error angle
-     * @param name joint name, part name or "all"
-     * @param limit the maximum joint servo error angle[rad]
-     */
-    void setServoErrorLimit(in string name, in double limit);
+        /**
+         * @brief servo on/off
+         * @param name joint name, part name or "all"
+         * @param _ss SWITCH_ON or SWITCH_OFF
+         * @retval true if servo on/off successfully
+         * @retval false otherwise
+         */
+        boolean servo(in string name, in SwitchStatus _ss);
 
-    /**
-     * @brief remove offsets on sensor outputs form gyro sensors and accelerometers. This function takes 10[s]. Please keep the robot static.
-     */
-    void calibrateInertiaSensor();
+        /**
+         * @brief set the parcentage to the default servo gain
+         * @param name joint name, part name or "all"
+         * @param percentage to joint servo gain[0-100]
+         */
+        void setServoGainPercentage(in string name, in double percentage);
 
-    /**
-     * @brief remove offsets on sensor outputs form force/torque sensors. This function takes 10[s]. Please keep the robot static and make sure that robot's sensors do not contact with any objects.
-     */
-    void removeForceSensorOffset();
+        /**
+         * @brief set the parcentage to the default servo Pgain
+         * @param name joint name, part name or "all"
+         * @param percentage to joint servo gain[0-100]
+         */
+        void setServoPGainPercentage(in string name, in double percentage);
 
-    /**
-     * @brief initialize joint angle
-     * @param name joint name, part name or "all"
-     * @param option string of joint angle initialization
-     */
-    void initializeJointAngle(in string name, in string option);
+        /**
+         * @brief set the parcentage to the default servo Dgain
+         * @param name joint name, part name or "all"
+         * @param percentage to joint servo gain[0-100]
+         */
+        void setServoDGainPercentage(in string name, in double percentage);
 
-    /**
-     * @brief add definition of joint group
-     * @param gname name of the joint group
-     * @param jnames list of joint name 
-     * @return true if the group is added successfully, false otherwise
-     */
-    boolean addJointGroup(in string gname, in StrSequence jnames);
+        /**
+         * @brief set the parcentage to the default servo Pgain with traisition time
+         * @param name joint name, part name or "all"
+         * @param percentage to joint servo gain[0-100]
+         * @param length of time [s] required to change gain
+         */
+        void setServoPGainPercentageWithTime(in string name, in double percentage, in double time);
+
+        /**
+         * @brief set the parcentage to the default servo Dgain with transition time
+         * @param name joint name, part name or "all"
+         * @param percentage to joint servo gain[0-100]
+         * @param length of time [s] required to change gain
+         */
+        void setServoDGainPercentageWithTime(in string name, in double percentage, in double time);
+
+        /**
+         * @brief set the maximum joint servo error angle
+         * @param name joint name, part name or "all"
+         * @param limit the maximum joint servo error angle[rad]
+         */
+        void setServoErrorLimit(in string name, in double limit);
+
+        /**
+         * @brief remove offsets on sensor outputs form gyro sensors and accelerometers. This function takes 10[s].
+         * Please keep the robot static.
+         */
+        void calibrateInertiaSensor();
+
+        /**
+         * @brief remove offsets on sensor outputs form force/torque sensors. This function takes 10[s]. Please keep the
+         * robot static and make sure that robot's sensors do not contact with any objects.
+         */
+        void removeForceSensorOffset();
+
+        /**
+         * @brief initialize joint angle
+         * @param name joint name, part name or "all"
+         * @param option string of joint angle initialization
+         */
+        void initializeJointAngle(in string name, in string option);
+
+        /**
+         * @brief add definition of joint group
+         * @param gname name of the joint group
+         * @param jnames list of joint name
+         * @return true if the group is added successfully, false otherwise
+         */
+        boolean addJointGroup(in string gname, in StrSequence jnames);
 
 
-    /**
-     * @brief get digital input to robot
-     * @param dOut will hold the input bits as an array of bytes
-     * @return true if applicable, false otherwise
-     */
-    boolean readDigitalInput(out OctSequence din);
+        /**
+         * @brief get digital input to robot
+         * @param dOut will hold the input bits as an array of bytes
+         * @return true if applicable, false otherwise
+         */
+        boolean readDigitalInput(out OctSequence din);
 
-    /**
-     * @brief get digital input length of robot, non-applicable bits are nop
-     * @return length of digital input in bytes
-     */
-    long lengthDigitalInput();
+        /**
+         * @brief get digital input length of robot, non-applicable bits are nop
+         * @return length of digital input in bytes
+         */
+        long lengthDigitalInput();
 
-    /**
-     * @brief set digital output from robot
-     * @param dOut sends the output from the robot in a byte array
-     * @return true if applicable, false otherwise
-     */
-    boolean writeDigitalOutput(in OctSequence dout);
+        /**
+         * @brief set digital output from robot
+         * @param dOut sends the output from the robot in a byte array
+         * @return true if applicable, false otherwise
+         */
+        boolean writeDigitalOutput(in OctSequence dout);
 
-    /**
-     * @brief set digital output from robot
-     * @param dOut sends the output from the robot in a byte array
-     * @param mask binary vector which selects output to be set
-     * @return true if applicable, false otherwise
-     */
-    boolean writeDigitalOutputWithMask(in OctSequence dout, in OctSequence mask);
+        /**
+         * @brief set digital output from robot
+         * @param dOut sends the output from the robot in a byte array
+         * @param mask binary vector which selects output to be set
+         * @return true if applicable, false otherwise
+         */
+        boolean writeDigitalOutputWithMask(in OctSequence dout, in OctSequence mask);
 
-    /**
-     * @brief get digital output length of robot, non-applicable bits are nop
-     * @return length of digital output in bytes
-     */
-    long lengthDigitalOutput();
+        /**
+         * @brief get digital output length of robot, non-applicable bits are nop
+         * @return length of digital output in bytes
+         */
+        long lengthDigitalOutput();
 
-    /**
-     * @brief get digital output to robot
-     * @param dOut will hold the input bits as an array of bytes
-     * @return true if applicable, false otherwise
-     */
-    boolean readDigitalOutput(out OctSequence dOut);
+        /**
+         * @brief get digital output to robot
+         * @param dOut will hold the input bits as an array of bytes
+         * @return true if applicable, false otherwise
+         */
+        boolean readDigitalOutput(out OctSequence dOut);
 
-    /* robot status version 2.0 */
-    struct BatteryState
-    {
-      double			voltage;  ///< voltage of power supply[V]
-      double			current;  ///< current[A] 
-      double                    soc;  	  ///< state of charge[%]
+        /* robot status version 2.0 */
+        struct BatteryState {
+            double voltage; ///< voltage of power supply[V]
+            double current; ///< current[A]
+            double soc;     ///< state of charge[%]
+        };
+        /**
+         * @brief status of the robot
+         */
+        struct RobotState2 {
+            DblSequence angle;   ///< current joint angles[rad]
+            DblSequence command; ///< reference joint angles[rad]
+            DblSequence torque;  ///< joint torques[Nm]
+            /**
+             * @brief servo statuses(32bit+extra states)
+             *
+             * 0: calib status ( 1 => done )\n
+             * 1: servo status ( 1 => on )\n
+             * 2: power status ( 1 => supplied )\n
+             * 3-18: servo alarms (see @ref iob.h)\n
+             * 19-23: unused
+             * 24-31: driver temperature (deg)
+             */
+            LongSequenceSequence servoState;
+
+            sequence<DblSequence6> force;     ///< forces[N] and torques[Nm]
+            sequence<DblSequence3> rateGyro;  ///< angular velocities[rad/s]
+            sequence<DblSequence3> accel;     ///< accelerations[m/(s^2)]
+            sequence<BatteryState> batteries; ///< battery states
+            double voltage;                   ///< voltage of power supply[V]
+            double current;                   ///< current[A]
+            sequence<double> temperature;     ///< temperatures
+        };
+
+        /**
+         * @brief get status of the robot
+         * @param rs status of the robot
+         */
+        void getStatus2(out RobotState2 rs);
+
+        /**
+         * @brief RobotState2 with timestamp
+         */
+        struct TimedRobotState2 {
+            RTC::Time tm;
+            RobotState2 data;
+        };
+
+        /**
+         * @brief set joint inertia
+         * @param name joint name
+         * @param mn joint inertia
+         * @return true if set successfully, false otherwise
+         */
+        boolean setJointInertia(in string name, in double mn);
+
+        /**
+         * @brief set joint inertias
+         * @param mns array of joint inertia
+         */
+        void setJointInertias(in DblSequence mns);
+
+        /**
+         * @brief enable disturbance observer
+         */
+        void enableDisturbanceObserver();
+
+        /**
+         * @brief disable disturbance observer
+         */
+        void disableDisturbanceObserver();
+
+        /**
+         * @brief set disturbance observer gain
+         * @param gain disturbance observer gain
+         */
+        void setDisturbanceObserverGain(in double gain);
+
+        /**
+         * @brief set the parcentage to the default servo gain
+         * @param name joint name, part name or "all"
+         * @param percentage to joint servo gain[0-100]
+         */
+        void setServoTorqueGainPercentage(in string name, in double percentage);
+
+        enum JointControlMode { FREE, POSITION, TORQUE, VELOCITY, POSITION_TORQUE };
+        /**
+         * @brief set joint control mode
+         * @param jname joint name, part name or "all"
+         * @param jcm   joint control mode
+         */
+        void setJointControlMode(in string jname, in JointControlMode jcm);
     };
-    /**
-     * @brief status of the robot
-     */
-    struct RobotState2
-    {
-      DblSequence		angle;  ///< current joint angles[rad]
-      DblSequence		command;///< reference joint angles[rad]
-      DblSequence		torque; ///< joint torques[Nm]
-      /**
-       * @brief servo statuses(32bit+extra states)
-       * 
-       * 0: calib status ( 1 => done )\n 
-       * 1: servo status ( 1 => on )\n
-       * 2: power status ( 1 => supplied )\n
-       * 3-18: servo alarms (see @ref iob.h)\n
-       * 19-23: unused
-       * 24-31: driver temperature (deg)
-       */
-      LongSequenceSequence		servoState;
-      
-      sequence<DblSequence6>	force;    ///< forces[N] and torques[Nm]
-      sequence<DblSequence3>	rateGyro; ///< angular velocities[rad/s]
-      sequence<DblSequence3>	accel;    ///< accelerations[m/(s^2)]
-      sequence<BatteryState>    batteries;///< battery states
-      double			voltage;  ///< voltage of power supply[V]
-      double			current;  ///< current[A] 
-      sequence<double>	        temperature; ///< temperatures
-    };
-
-    /**
-     * @brief get status of the robot
-     * @param rs status of the robot
-     */
-    void getStatus2(out RobotState2 rs);
-
-    /**
-     * @brief RobotState2 with timestamp
-     */
-    struct TimedRobotState2
-    {
-      RTC::Time tm;
-      RobotState2 data;
-    };
-
-    /**
-     * @brief set joint inertia
-     * @param name joint name
-     * @param mn joint inertia
-     * @return true if set successfully, false otherwise
-     */
-    boolean setJointInertia(in string name, in double mn);
-
-    /**
-     * @brief set joint inertias
-     * @param mns array of joint inertia
-     */
-    void setJointInertias(in DblSequence mns);
-
-    /**
-     * @brief enable disturbance observer
-     */
-    void enableDisturbanceObserver();
-
-    /**
-     * @brief disable disturbance observer
-     */
-    void disableDisturbanceObserver();
-
-    /**
-     * @brief set disturbance observer gain
-     * @param gain disturbance observer gain
-     */
-    void setDisturbanceObserverGain(in double gain);
-
-    /**
-     * @brief set the parcentage to the default servo gain
-     * @param name joint name, part name or "all"
-     * @param percentage to joint servo gain[0-100]
-     */
-    void setServoTorqueGainPercentage(in string name, in double percentage);
-
-    enum JointControlMode {FREE, POSITION, TORQUE, VELOCITY, POSITION_TORQUE};
-    /**
-     * @brief set joint control mode
-     * @param jname joint name, part name or "all"
-     * @param jcm   joint control mode
-     */
-    void setJointControlMode(in string jname, in JointControlMode jcm);
-
-  };
 };
+
+#endif // RobotHardware2Service_idl

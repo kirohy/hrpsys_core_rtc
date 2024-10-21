@@ -114,7 +114,7 @@ RTC::ReturnCode_t KalmanFilter2::onInitialize() {
     rpy_kf.setParam(m_dt, 0.001, 0.003, 1000, std::string(m_profile.instance_name));
     rpy_kf.setSensorR(m_sensorR);
     ekf_filter.setdt(m_dt);
-    kf_algorithm = OpenHRP::KalmanFilter2Service::RPYKalmanFilter;
+    kf_algorithm = kalman_filter::KalmanFilter2Service::RPYKalmanFilter;
     m_qCurrent.data.length(m_robot->numJoints());
     acc_offset     = cnoid::Vector3::Zero();
     sensorR_offset = cnoid::Matrix3::Identity();
@@ -172,9 +172,9 @@ RTC::ReturnCode_t KalmanFilter2::onExecute(RTC::UniqueId ec_id) {
             RTC_INFO_STREAM("raw data gyro : " << std::endl << gyro);
         }
         cnoid::Vector3 rpy, rpyRaw, baseRpyCurrent;
-        if (kf_algorithm == OpenHRP::KalmanFilter2Service::QuaternionExtendedKalmanFilter) {
+        if (kf_algorithm == kalman_filter::KalmanFilter2Service::QuaternionExtendedKalmanFilter) {
             ekf_filter.main_one(rpy, rpyRaw, acc, gyro);
-        } else if (kf_algorithm == OpenHRP::KalmanFilter2Service::RPYKalmanFilter) {
+        } else if (kf_algorithm == kalman_filter::KalmanFilter2Service::RPYKalmanFilter) {
             double sl_y;
             cnoid::Matrix3 BtoS;
             m_robot->calcForwardKinematics();
@@ -208,7 +208,7 @@ RTC::ReturnCode_t KalmanFilter2::onExecute(RTC::UniqueId ec_id) {
     return RTC::RTC_OK;
 }
 
-bool KalmanFilter2::setKalmanFilterParam(const OpenHRP::KalmanFilter2Service::KalmanFilterParam &i_param) {
+bool KalmanFilter2::setKalmanFilterParam(const kalman_filter::KalmanFilter2Service::KalmanFilterParam &i_param) {
     RTC_INFO_STREAM("setKalmanFilterParam");
     rpy_kf.setParam(m_dt, i_param.Q_angle, i_param.Q_rate, i_param.R_angle, std::string(m_profile.instance_name));
     kf_algorithm = i_param.kf_algorithm;
@@ -220,7 +220,7 @@ bool KalmanFilter2::setKalmanFilterParam(const OpenHRP::KalmanFilter2Service::Ka
         rpyoff(i) = i_param.sensorRPY_offset[i];
     }
     sensorR_offset = cnoid::rotFromRpy(rpyoff);
-    RTC_INFO_STREAM("  kf_algorithm=" << (kf_algorithm == OpenHRP::KalmanFilter2Service::RPYKalmanFilter
+    RTC_INFO_STREAM("  kf_algorithm=" << (kf_algorithm == kalman_filter::KalmanFilter2Service::RPYKalmanFilter
                                               ? "RPYKalmanFilter"
                                               : "QuaternionExtendedKalmanFilter"));
     RTC_INFO_STREAM("  acc_offset = " << acc_offset.format(
@@ -236,7 +236,7 @@ bool KalmanFilter2::resetKalmanFilterState() {
     return true;
 };
 
-bool KalmanFilter2::getKalmanFilterParam(OpenHRP::KalmanFilter2Service::KalmanFilterParam &i_param) {
+bool KalmanFilter2::getKalmanFilterParam(kalman_filter::KalmanFilter2Service::KalmanFilterParam &i_param) {
     i_param.Q_angle      = rpy_kf.getQangle();
     i_param.Q_rate       = rpy_kf.getQrate();
     i_param.R_angle      = rpy_kf.getRangle();

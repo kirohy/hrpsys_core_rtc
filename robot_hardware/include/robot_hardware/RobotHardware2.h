@@ -2,7 +2,6 @@
 #define ROBOT_HARDWARE2_H
 
 #include <cnoid/Body>
-#include <hrpsys/idl/HRPDataTypes.hh>
 #include <memory>
 #include <robot_hardware/idl/RobotHardware2Service.hh>
 #include <rtm/CorbaPort.h>
@@ -58,9 +57,9 @@ class RobotHardware2 : public RTC::DataFlowComponentBase {
     std::vector<RTC::TimedAcceleration3D> m_acc;
     std::vector<RTC::TimedAngularVelocity3D> m_rate;
     std::vector<RTC::TimedDoubleSeq> m_force;
-    OpenHRP::TimedLongSeqSeq m_servoState;
+    robot_hardware::TimedLongSeqSeq m_servoState;
     RTC::TimedLong m_emergencySignal;
-    OpenHRP::RobotHardware2Service::TimedRobotState2 m_rstate2;
+    robot_hardware::RobotHardware2Service::TimedRobotState2 m_rstate2;
 
     RTC::OutPort<RTC::TimedDoubleSeq> m_qOut;
     RTC::OutPort<RTC::TimedDoubleSeq> m_dqOut;
@@ -70,9 +69,9 @@ class RobotHardware2 : public RTC::DataFlowComponentBase {
     std::vector<std::unique_ptr<RTC::OutPort<RTC::TimedAcceleration3D>>> m_accOut;
     std::vector<std::unique_ptr<RTC::OutPort<RTC::TimedAngularVelocity3D>>> m_rateOut;
     std::vector<std::unique_ptr<RTC::OutPort<RTC::TimedDoubleSeq>>> m_forceOut;
-    RTC::OutPort<OpenHRP::TimedLongSeqSeq> m_servoStateOut;
+    RTC::OutPort<robot_hardware::TimedLongSeqSeq> m_servoStateOut;
     RTC::OutPort<RTC::TimedLong> m_emergencySignalOut;
-    RTC::OutPort<OpenHRP::RobotHardware2Service::TimedRobotState2> m_rstate2Out;
+    RTC::OutPort<robot_hardware::RobotHardware2Service::TimedRobotState2> m_rstate2Out;
 
     RTC::CorbaPort m_RobotHardware2ServicePort;
     RobotHardware2Service_impl m_service0;
@@ -80,7 +79,7 @@ class RobotHardware2 : public RTC::DataFlowComponentBase {
     robot *robot_ptr(void) { return m_robot.get(); };
 
   private:
-    void getStatus2(OpenHRP::RobotHardware2Service::RobotState2 &rstate2);
+    void getStatus2(robot_hardware::RobotHardware2Service::RobotState2 &rstate2);
 
     int dummy;
     std::shared_ptr<robot> m_robot;

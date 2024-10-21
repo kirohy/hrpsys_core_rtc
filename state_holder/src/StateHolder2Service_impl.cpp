@@ -11,7 +11,7 @@ void StateHolder2Service_impl::goActual() {
     m_comp->goActual();
 }
 
-void StateHolder2Service_impl::getCommand(OpenHRP::StateHolder2Service::Command_out com) {
-    com = new OpenHRP::StateHolder2Service::Command;
+void StateHolder2Service_impl::getCommand(state_holder::StateHolder2Service::Command_out com) {
+    com = new state_holder::StateHolder2Service::Command;
     m_comp->getCommand(*com);
 }

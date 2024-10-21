@@ -36,15 +36,17 @@ class RemoveForceSensorLinkOffset2 : public RTC::DataFlowComponentBase {
     virtual RTC::ReturnCode_t onDeactivated(RTC::UniqueId ec_id);
     virtual RTC::ReturnCode_t onExecute(RTC::UniqueId ec_id);
 
-    bool
-    setForceMomentOffsetParam(const std::string &i_name_,
-                              const OpenHRP::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_);
-    bool getForceMomentOffsetParam(const std::string &i_name_,
-                                   OpenHRP::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_);
+    bool setForceMomentOffsetParam(
+        const std::string &i_name_,
+        const remove_force_sensor_link_offset::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_);
+    bool getForceMomentOffsetParam(
+        const std::string &i_name_,
+        remove_force_sensor_link_offset::RemoveForceSensorLinkOffset2Service::forcemomentOffsetParam &i_param_);
     bool loadForceMomentOffsetParams(const std::string &filename);
     bool dumpForceMomentOffsetParams(const std::string &filename);
-    bool removeForceSensorOffset(const ::OpenHRP::RemoveForceSensorLinkOffset2Service::StrSequence &names,
-                                 const double tm);
+    bool removeForceSensorOffset(
+        const ::remove_force_sensor_link_offset::RemoveForceSensorLinkOffset2Service::StrSequence &names,
+        const double tm);
 
   protected:
     RTC::TimedDoubleSeq m_qCurrent;
