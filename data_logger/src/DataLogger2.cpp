@@ -228,7 +228,7 @@ RTC::ReturnCode_t DataLogger2::onExecute(RTC::UniqueId ec_id) {
             struct tm *tm_ = localtime(&sec);
             char date[20];
             strftime(date, 20, "%Y-%m-%d", tm_);
-            char basename[30];
+            char basename[32];
             sprintf(basename, "emglog-%s-%02d%02d", date, tm_->tm_hour, tm_->tm_min);
             RTC_INFO_STREAM("received emergency signal. saving log files(" << basename << ")");
             save(basename);

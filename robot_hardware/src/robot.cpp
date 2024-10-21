@@ -582,14 +582,16 @@ bool robot::checkJointCommands(const double *i_commands) {
             double command_old = m_commandOld[i], command = i_commands[i];
             double v = (command - command_old) / m_dt;
             if (fabs(v) > joint(i)->dq_upper()) {
-                std::cerr << time_string() << ": joint command velocity limit over: joint = " << joint(i)->name()
+                std::cerr << "[RobotHardware] " << time_string()
+                          << ": joint command velocity limit over: joint = " << joint(i)->name()
                           << ", vlimit = " << joint(i)->dq_upper() / M_PI * 180 << "[deg/s], v = " << v / M_PI * 180
                           << "[deg/s]" << std::endl;
                 return true;
             }
             double a = (v - m_velocityOld[i]) / m_dt;
             if (m_accLimit && fabs(a) > m_accLimit) {
-                std::cerr << time_string() << ": joint command acceleration limit over: joint = " << joint(i)->name()
+                std::cerr << "[RobotHardware] " << time_string()
+                          << ": joint command acceleration limit over: joint = " << joint(i)->name()
                           << ", alimit = " << m_accLimit / M_PI * 180 << "[deg/s^2], v = " << a / M_PI * 180
                           << "[deg/s^2]" << std::endl;
                 return true;
@@ -608,7 +610,8 @@ bool robot::checkEmergency(emg_reason &o_reason, int &o_id) {
             read_actual_angle(i, &angle);
             read_command_angle(i, &command);
             if (fabs(angle - command) > m_servoErrorLimit[i]) {
-                std::cerr << time_string() << ": servo error limit over: joint = " << joint(i)->name()
+                std::cerr << "[RobotHardware] " << time_string()
+                          << ": servo error limit over: joint = " << joint(i)->name()
                           << ", qRef = " << command / M_PI * 180 << "[deg], q = " << angle / M_PI * 180 << "[deg]"
                           << std::endl;
                 o_reason = EMG_SERVO_ERROR;
@@ -622,7 +625,8 @@ bool robot::checkEmergency(emg_reason &o_reason, int &o_id) {
         double force[6];
         read_force_sensor(m_rLegForceSensorId, force);
         if (force[FZ] > this->mass() * G(2) * m_fzLimitRatio) {
-            std::cerr << time_string() << ": right Fz limit over: Fz = " << force[FZ] << std::endl;
+            std::cerr << "[RobotHardware] " << time_string() << ": right Fz limit over: Fz = " << force[FZ]
+                      << std::endl;
             o_reason = EMG_FZ;
             o_id     = m_rLegForceSensorId;
             return true;
@@ -632,7 +636,7 @@ bool robot::checkEmergency(emg_reason &o_reason, int &o_id) {
         double force[6];
         read_force_sensor(m_lLegForceSensorId, force);
         if (force[FZ] > this->mass() * G(2) * m_fzLimitRatio) {
-            std::cerr << time_string() << ": left Fz limit over: Fz = " << force[FZ] << std::endl;
+            std::cerr << "[RobotHardware] " << time_string() << ": left Fz limit over: Fz = " << force[FZ] << std::endl;
             o_reason = EMG_FZ;
             o_id     = m_lLegForceSensorId;
             return true;
@@ -662,7 +666,8 @@ bool robot::checkEmergency(emg_reason &o_reason, int &o_id) {
                 m_reportedEmergency = true;
                 o_reason            = EMG_POWER_OFF;
                 o_id                = i;
-                std::cerr << time_string() << ": power off detected : joint = " << joint(i)->name() << std::endl;
+                std::cerr << "[RobotHardware] " << time_string()
+                          << ": power off detected : joint = " << joint(i)->name() << std::endl;
                 return true;
             }
         }
@@ -837,7 +842,7 @@ void robot::setProperty(const char *i_key, const char *i_value) {
     } else {
         isKnownKey = false;
     }
-    if (isKnownKey) std::cout << i_key << ": " << i_value << std::endl;
+    if (isKnownKey) std::cout << "[RobotHardware] " << i_key << ": " << i_value << std::endl;
 }
 
 bool robot::names2ids(const std::vector<std::string> &i_names, std::vector<int> &o_ids) {
@@ -845,7 +850,8 @@ bool robot::names2ids(const std::vector<std::string> &i_names, std::vector<int> 
     for (unsigned int i = 0; i < i_names.size(); i++) {
         cnoid::LinkPtr l = link(i_names[i]);
         if (!l) {
-            std::cout << "joint named [" << i_names[i] << "] not found" << std::endl;
+            std::cout << "[RobotHardware] "
+                      << "joint named [" << i_names[i] << "] not found" << std::endl;
             ret = false;
         } else {
             o_ids.push_back(l->jointId());

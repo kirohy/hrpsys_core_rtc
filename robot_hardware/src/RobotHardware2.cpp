@@ -107,29 +107,29 @@ RTC::ReturnCode_t RobotHardware2::onInitialize() {
     m_rateOut.resize(m_robot->numGyroSensors());
     for (int i = 0; i < m_robot->numGyroSensors(); i++) {
         cnoid::RateGyroSensorPtr s = m_robot->findGyroSensor(i);
-        RTC_INFO_STREAM("Find RateGyroSensor: " << s->name());
-        m_rateOut[i] = std::make_unique<RTC::OutPort<RTC::TimedAngularVelocity3D>>(s->name().c_str(), m_rate[i]);
-        registerOutPort(s->name().c_str(), *m_rateOut[i]);
+        RTC_INFO_STREAM("Find RateGyroSensor: " << s->name() << "(id: " << s->id() << ")");
+        m_rateOut[s->id()] =
+            std::make_unique<RTC::OutPort<RTC::TimedAngularVelocity3D>>(s->name().c_str(), m_rate[s->id()]);
+        registerOutPort(s->name().c_str(), *m_rateOut[s->id()]);
     }
 
     m_acc.resize(m_robot->numAccSensors());
     m_accOut.resize(m_robot->numAccSensors());
     for (int i = 0; i < m_robot->numAccSensors(); i++) {
         cnoid::AccelerationSensorPtr s = m_robot->findAccSensor(i);
-        RTC_INFO_STREAM("Find AccelerationSensor: " << s->name());
-        m_accOut[i] = std::make_unique<RTC::OutPort<RTC::TimedAcceleration3D>>(s->name().c_str(), m_acc[i]);
-        registerOutPort(s->name().c_str(), *m_accOut[i]);
+        RTC_INFO_STREAM("Find AccelerationSensor: " << s->name() << "(id: " << s->id() << ")");
+        m_accOut[s->id()] = std::make_unique<RTC::OutPort<RTC::TimedAcceleration3D>>(s->name().c_str(), m_acc[s->id()]);
+        registerOutPort(s->name().c_str(), *m_accOut[s->id()]);
     }
 
-    cnoid::DeviceList<cnoid::ForceSensor> force_sensors(m_robot->devices());
-    m_force.resize(force_sensors.size());
-    m_forceOut.resize(force_sensors.size());
-    for (int i = 0; i < force_sensors.size(); i++) {
+    m_force.resize(m_robot->numForceSensors());
+    m_forceOut.resize(m_robot->numForceSensors());
+    for (int i = 0; i < m_robot->numForceSensors(); i++) {
         cnoid::ForceSensorPtr s = m_robot->findForceSensor(i);
-        RTC_INFO_STREAM("Find ForceSensor: " << s->name());
-        m_forceOut[i] = std::make_unique<RTC::OutPort<RTC::TimedDoubleSeq>>(s->name().c_str(), m_force[i]);
-        m_force[i].data.length(6);
-        registerOutPort(s->name().c_str(), *m_forceOut[i]);
+        RTC_INFO_STREAM("Find ForceSensor: " << s->name() << "(id: " << s->id() << ")");
+        m_forceOut[s->id()] = std::make_unique<RTC::OutPort<RTC::TimedDoubleSeq>>(s->name().c_str(), m_force[s->id()]);
+        m_force[s->id()].data.length(6);
+        registerOutPort(s->name().c_str(), *m_forceOut[s->id()]);
     }
 
     // Bind variables and configuration variable
