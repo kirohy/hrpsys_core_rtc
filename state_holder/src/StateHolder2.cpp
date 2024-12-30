@@ -6,27 +6,20 @@
 #include <state_holder/StateHolder2.h>
 #include <time.h>
 
-static const char *stateholder2_spec[] = {"implementation_id",
-                                          "StateHolder2",
-                                          "type_name",
-                                          "StateHolder2",
-                                          "description",
-                                          "state holder",
-                                          "version",
-                                          "1.0.0",
-                                          "vendor",
-                                          "JSK",
-                                          "category",
-                                          "example",
-                                          "activity_type",
-                                          "DataFlowComponent",
-                                          "max_instance",
-                                          "10",
-                                          "language",
-                                          "C++",
-                                          "lang_type",
-                                          "compile",
-                                          ""};
+// clang-format off
+static const char *stateholder2_spec[] = {
+    "implementation_id", "StateHolder2",
+    "type_name",         "StateHolder2",
+    "description",       "state holder",
+    "version",           "0.0.0",
+    "vendor",            "JSK",
+    "category",          "example",
+    "activity_type",     "DataFlowComponent",
+    "max_instance",      "10",
+    "language",          "C++",
+    "lang_type",         "compile",
+    ""};
+// clang-format on
 
 StateHolder2::StateHolder2(RTC::Manager *manager)
     : RTC::DataFlowComponentBase(manager), m_currentQIn("currentQIn", m_currentQ), m_qIn("qIn", m_q),

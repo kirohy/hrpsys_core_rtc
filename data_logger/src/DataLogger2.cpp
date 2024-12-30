@@ -2,13 +2,22 @@
 #include <hrpsys/idl/pointcloud.hh>
 #include <robot_hardware/idl/RobotHardware2Service.hh>
 
-
-static const char *nullcomponent_spec[] = {"implementation_id", "DataLogger2", "type_name", "DataLogger2",
-                                           "description", "data logger component", "version", "1.0", "vendor", "AIST",
-                                           "category", "example", "activity_type", "DataFlowComponent", "max_instance",
-                                           "10", "language", "C++", "lang_type", "compile",
-                                           // Configuration variables
-                                           "conf.default.log_precision", "0", ""};
+// clang-format off
+static const char *nullcomponent_spec[] = {
+    "implementation_id", "DataLogger2",
+    "type_name",         "DataLogger2",
+    "description",       "data logger component",
+    "version",           "0.0.0",
+    "vendor",            "JSK",
+    "category",          "example",
+    "activity_type",     "DataFlowComponent",
+    "max_instance",      "10",
+    "language",          "C++",
+    "lang_type",         "compile",
+    // Configuration variables
+    "conf.default.log_precision", "0",
+    ""};
+// clang-format on
 
 #define LOG_SET_PRECISION(strm)                                                                                        \
     int prc;                                                                                                           \

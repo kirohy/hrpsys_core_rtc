@@ -8,14 +8,23 @@ using sequence_player::bSequence;
 using sequence_player::dSequence;
 using sequence_player::dSequenceSequence;
 
-static const char *sequenceplayer2_spec[] = {"implementation_id", "SequencePlayer2", "type_name", "SequencePlayer2",
-                                             "description", "sequence player component", "version", "1.0.0", "vendor",
-                                             "JSK", "category", "example", "activity_type", "DataFlowComponent",
-                                             "max_instance", "10", "language", "C++", "lang_type", "compile",
-                                             // Configuration variables
-                                             "conf.default.debugLevel", "0", "conf.default.fixedLink", "",
-
-                                             ""};
+// clang-format off
+static const char *sequenceplayer2_spec[] = {
+    "implementation_id", "SequencePlayer2",
+    "type_name",         "SequencePlayer2",
+    "description",       "sequence player component",
+    "version",           "0.0.0",
+    "vendor",            "JSK",
+    "category",          "example",
+    "activity_type",     "DataFlowComponent",
+    "max_instance",      "10",
+    "language",          "C++",
+    "lang_type",         "compile",
+    // Configuration variables
+    "conf.default.debugLevel", "0",
+    "conf.default.fixedLink",  "",
+    ""};
+// clang-format on
 
 SequencePlayer2::SequencePlayer2(RTC::Manager *manager)
     : RTC::DataFlowComponentBase(manager), m_qInitIn("qInit", m_qInit), m_basePosInitIn("basePosInit", m_basePosInit),

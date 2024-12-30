@@ -5,12 +5,22 @@
 #include <remove_force_sensor_link_offset/RemoveForceSensorLinkOffset2.h>
 #include <rtm/CorbaNaming.h>
 
+// clang-format off
 static const char *removeforcesensorlinkoffset2_spec[] = {
-    "implementation_id", "RemoveForceSensorLinkOffset2", "type_name", "RemoveForceSensorLinkOffset2", "description",
-    "null component", "version", "0.0.0", "vendor", "JSK", "category", "example", "activity_type", "DataFlowComponent",
-    "max_instance", "10", "language", "C++", "lang_type", "compile",
+    "implementation_id", "RemoveForceSensorLinkOffset2",
+    "type_name",         "RemoveForceSensorLinkOffset2",
+    "description",       "remove force sensor link offset 2",
+    "version",           "0.0.0",
+    "vendor",            "JSK",
+    "category",          "example",
+    "activity_type",     "DataFlowComponent",
+    "max_instance",      "10",
+    "language",          "C++",
+    "lang_type",         "compile",
     // Configuration variables
-    "conf.default.debugLevel", "0", ""};
+    "conf.default.debugLevel", "0",
+    ""};
+// clang-format on
 
 RemoveForceSensorLinkOffset2::RemoveForceSensorLinkOffset2(RTC::Manager *manager)
     : RTC::DataFlowComponentBase(manager), m_qCurrentIn("qCurrent", m_qCurrent), m_rpyIn("rpy", m_rpy),

@@ -5,31 +5,24 @@
 #include <math.h>
 #include <rtm/CorbaNaming.h>
 
-//#define USE_EKF
+// #define USE_EKF
 
-static const char *kalmanfilter2_spec[] = {"implementation_id",
-                                           "KalmanFilter2",
-                                           "type_name",
-                                           "KalmanFilter2",
-                                           "description",
-                                           "kalman filter2",
-                                           "version",
-                                           "0.0.0",
-                                           "vendor",
-                                           "JSK",
-                                           "category",
-                                           "example",
-                                           "activity_type",
-                                           "DataFlowComponent",
-                                           "max_instance",
-                                           "10",
-                                           "language",
-                                           "C++",
-                                           "lang_type",
-                                           "compile",
-                                           "conf.default.debugLevel",
-                                           "0",
-                                           ""};
+// clang-format off
+static const char *kalmanfilter2_spec[] = {
+    "implementation_id", "KalmanFilter2",
+    "type_name",         "KalmanFilter2",
+    "description",       "kalman filter2",
+    "version",           "0.0.0",
+    "vendor",            "JSK",
+    "category",          "example",
+    "activity_type",     "DataFlowComponent",
+    "max_instance",      "10",
+    "language",          "C++",
+    "lang_type",         "compile",
+    // Configuration variables
+    "conf.default.debugLevel", "0",
+    ""};
+// clang-format on
 
 KalmanFilter2::KalmanFilter2(RTC::Manager *manager)
     : RTC::DataFlowComponentBase(manager), m_rateIn("rate", m_rate), m_accIn("acc", m_acc),

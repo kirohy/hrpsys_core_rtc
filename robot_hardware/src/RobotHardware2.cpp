@@ -3,15 +3,26 @@
 #include <robot_hardware/robot.h>
 #include <rtm/CorbaNaming.h>
 
+// clang-format off
 static const char *robothardware2_spec[] = {
-    "implementation_id", "RobotHardware2", "type_name", "RobotHardware2", "description", "RobotHardware2", "version",
-    "1.0.0", "vendor", "JSK", "category", "example", "activity_type", "DataFlowComponent", "max_instance", "1",
-    "language", "C++", "lang_type", "compile",
+    "implementation_id", "RobotHardware2",
+    "type_name",         "RobotHardware2",
+    "description",       "RobotHardware2",
+    "version",           "0.0.0",
+    "vendor",            "JSK",
+    "category",          "example",
+    "activity_type",     "DataFlowComponent",
+    "max_instance",      "1",
+    "language",          "C++",
+    "lang_type",         "compile",
     // Configuration variables
-    "conf.default.isDemoMode", "0", "conf.default.fzLimitRatio", "2.0", "conf.default.servoErrorLimit", ",",
-    "conf.default.jointAccelerationLimit", "0", "conf.default.servoOnDelay", "0",
-
+    "conf.default.isDemoMode",             "0",
+    "conf.default.fzLimitRatio",           "2.0",
+    "conf.default.servoErrorLimit",        ",",
+    "conf.default.jointAccelerationLimit", "0",
+    "conf.default.servoOnDelay",           "0",
     ""};
+// clang-format on
 
 RobotHardware2::RobotHardware2(RTC::Manager *manager)
     : RTC::DataFlowComponentBase(manager),
