@@ -4,10 +4,9 @@ add_definitions(-Wno-deprecated)
 add_definitions(-DROBOT_IOB_VERSION=4)
 
 find_package(catkin REQUIRED COMPONENTS
-  hrpsys_trans_bridge
+  jaxon_shm_controller
 )
 find_package(choreonoid REQUIRED)
-find_package(hrpsys QUIET)
 
 find_package(PkgConfig)
 pkg_check_modules(openrtm_aist openrtm-aist REQUIRED)
@@ -17,7 +16,6 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${CHOREONOID_INCLUDE_DIRS}
   ${openrtm_aist_INCLUDE_DIRS}
-  ${hrpsys_INCLUDE_DIRS}
 )
 
 link_directories(

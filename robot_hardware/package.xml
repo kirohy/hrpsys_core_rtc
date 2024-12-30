@@ -13,5 +13,5 @@
   <depend>roscpp</depend>
   <depend>rtmbuild2</depend>
   <depend>choreonoid</depend>
-  <depend>hrpsys_trans_bridge</depend>
+  <depend>jaxon_shm_controller</depend>
 </package>

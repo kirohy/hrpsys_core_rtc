@@ -8,7 +8,7 @@
 #include <cnoid/EigenUtil>
 #include <cnoid/ForceSensor>
 #include <cnoid/RateGyroSensor>
-#include <hrpsys/io/iob.h>
+#include <jaxon_shm_controller/iob.h>
 #include <semaphore.h>
 
 enum { RLEG, LLEG };
