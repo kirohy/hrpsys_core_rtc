@@ -14,4 +14,5 @@
   <depend>rtmbuild2</depend>
   <depend>choreonoid</depend>
   <depend>jaxon_shm_controller</depend>
+  <exec_depend>jaxon_ros_interface</exec_depend>
 </package>
