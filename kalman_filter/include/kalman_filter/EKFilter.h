@@ -137,7 +137,7 @@ class EKFilter {
         fuzzyR    = R + k1 * z * z * cnoid::Matrix3::Identity();
     };
 
-    void main_one(cnoid::Vector3 &rpy, cnoid::Vector3 &rpyRaw, const cnoid::Vector3 &acc, const cnoid::Vector3 &gyro) {
+    void main_one(cnoid::Vector3 &rpy, const cnoid::Vector3 &acc, const cnoid::Vector3 &gyro) {
         cnoid::Matrix3 fuzzyR;
         calcRWithFuzzyRule(fuzzyR, acc, gyro);
         prediction(gyro);
@@ -145,6 +145,16 @@ class EKFilter {
         /* ekf_filter.printAll(); */
         cnoid::Quaternion q(x[0], x[1], x[2], x[3]);
         rpy = cnoid::rpyFromRot(q.toRotationMatrix());
+    };
+
+    void main_one(cnoid::Quaternion &q, const cnoid::Vector3 &acc, const cnoid::Vector3 &gyro) {
+        cnoid::Matrix3 fuzzyR;
+        calcRWithFuzzyRule(fuzzyR, acc, gyro);
+        prediction(gyro);
+        correction(acc, fuzzyR);
+        /* ekf_filter.printAll(); */
+        cnoid::Quaternion xq(x[0], x[1], x[2], x[3]);
+        q = xq.normalized();
     };
 
     void setdt(const double _dt) { dt = _dt; };

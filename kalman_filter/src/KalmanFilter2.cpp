@@ -166,7 +166,7 @@ RTC::ReturnCode_t KalmanFilter2::onExecute(RTC::UniqueId ec_id) {
         }
         cnoid::Vector3 rpy, rpyRaw, baseRpyCurrent;
         if (kf_algorithm == kalman_filter::KalmanFilter2Service::QuaternionExtendedKalmanFilter) {
-            ekf_filter.main_one(rpy, rpyRaw, acc, gyro);
+            ekf_filter.main_one(rpy, acc, gyro);
         } else if (kf_algorithm == kalman_filter::KalmanFilter2Service::RPYKalmanFilter) {
             double sl_y;
             cnoid::Matrix3 BtoS;
