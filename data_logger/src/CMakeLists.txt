@@ -5,7 +5,6 @@ add_definitions(-Wno-deprecated)
 find_package(catkin REQUIRED COMPONENTS
   robot_hardware
 )
-find_package(hrpsys QUIET)
 
 find_package(PkgConfig)
 pkg_check_modules(openrtm_aist openrtm-aist REQUIRED)
@@ -14,7 +13,6 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/include
   ${catkin_INCLUDE_DIRS}
   ${openrtm_aist_INCLUDE_DIRS}
-  ${hrpsys_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -30,7 +28,6 @@ target_link_libraries(DataLogger2
   ${catkin_LIBRARIES}
   ${openrtm_aist_LIBRARIES}
   ${${PROJECT_NAME}_IDLLIBRARY_DIRS}
-  pointcloudSkel pointcloudStub
 )
 
 set_target_properties(DataLogger2 PROPERTIES PREFIX "")

@@ -5,11 +5,12 @@
 #include <cstdio>
 #include <cstring>
 #include <fstream>
-#include <hrpsys/io/iob.h>
 #include <iostream>
-#include <robot_hardware/robot.h>
 #include <sys/time.h>
 #include <unistd.h>
+
+#include <jaxon_shm_controller/iob.h>
+#include <robot_hardware/robot.h>
 
 #define CALIB_COUNT (10 * 200)
 #define GAIN_COUNT (5 * 200)

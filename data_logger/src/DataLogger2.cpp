@@ -1,5 +1,5 @@
 #include <data_logger/DataLogger2.h>
-#include <hrpsys/idl/pointcloud.hh>
+#include <data_logger/idl/PointCloud.hh>
 #include <robot_hardware/idl/RobotHardware2Service.hh>
 
 // clang-format off
