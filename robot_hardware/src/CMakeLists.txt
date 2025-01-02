@@ -1,5 +1,3 @@
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_BUILD_TYPE Release)
 add_definitions(-Wno-deprecated)
 add_definitions(-DROBOT_IOB_VERSION=4)
 
