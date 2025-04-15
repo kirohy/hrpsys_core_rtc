@@ -104,8 +104,8 @@ RTC::ReturnCode_t StateHolder2::onInitialize() {
     }
 
     cnoid::LinkPtr li  = robot->rootLink();
-    cnoid::Vector3 p   = li->translation();
-    cnoid::Matrix3 R   = li->rotation().matrix();
+    cnoid::Vector3 p   = li->offsetTranslation();
+    cnoid::Matrix3 R   = li->offsetRotation().matrix();
     cnoid::Vector3 rpy = cnoid::rpyFromRot(R);
 
     m_baseTform.data.length(12);
